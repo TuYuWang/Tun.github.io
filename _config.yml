@@ -5,8 +5,8 @@ header-img: img/home-bg.jpg
 email: 18759280805@163.com
 description: "山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜"
 keyword: ""
-url: "http://huangxuan.me"              # your host, for absolute URL
-baseurl: "/huxblog-boilerplate"         # for example, '/blog' if your blog hosted on 'host/blog'
+url: "https://github.com/TuYuWang"              # your host, for absolute URL
+baseurl: "/tuyuwang.github.io"         # for example, '/blog' if your blog hosted on 'host/blog'
 
 
 
