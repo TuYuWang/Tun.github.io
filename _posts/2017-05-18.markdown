@@ -6,8 +6,7 @@ date:       2015-09-22
 author:     "Hux"
 header-img: "img/post-bg-js-version.jpg"
 tags:
-    - iOS
-    - OpenVC
+    - OS
 ---
 
 [在MacOS和iOS系统中使用OpenCV](http://blog.devtang.com/2012/10/27/use-opencv-in-ios/#在-iOS-系统中使用-OpenCV)
