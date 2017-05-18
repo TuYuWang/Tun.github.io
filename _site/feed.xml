@@ -3,11 +3,145 @@
   <channel>
     <title>Tun Blog</title>
     <description>山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜</description>
-    <link>http://localhost:4000/huxblog-boilerplate/</link>
-    <atom:link href="http://localhost:4000/huxblog-boilerplate/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 18 May 2017 10:44:07 +0800</pubDate>
-    <lastBuildDate>Thu, 18 May 2017 10:44:07 +0800</lastBuildDate>
+    <link>http://localhost:4000/tuyuwang.github.io/</link>
+    <atom:link href="http://localhost:4000/tuyuwang.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Thu, 18 May 2017 17:26:16 +0800</pubDate>
+    <lastBuildDate>Thu, 18 May 2017 17:26:16 +0800</lastBuildDate>
     <generator>Jekyll v3.4.3</generator>
+    
+      <item>
+        <title>OpenVC的学习日记</title>
+        <description>&lt;p&gt;&lt;a href=&quot;http://blog.devtang.com/2012/10/27/use-opencv-in-ios/#在-iOS-系统中使用-OpenCV&quot;&gt;在MacOS和iOS系统中使用OpenCV&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;著作权声明&quot;&gt;著作权声明&lt;/h4&gt;
+
+&lt;p&gt;本文译自 &lt;a href=&quot;http://benmccormick.org/2015/09/14/es5-es6-es2016-es-next-whats-going-on-with-javascript-versioning/&quot;&gt;ES5, ES6, ES2016, ES.Next: What’s going on with JavaScript versioning?&lt;/a&gt; &lt;br /&gt;
+译者 &lt;a href=&quot;http://weibo.com/huxpro&quot;&gt;涂育旺&lt;/a&gt;，首次发布于 &lt;a href=&quot;http://tuyuwang.github.io&quot;&gt;Tun Blog&lt;/a&gt;，转载请保留以上链接&lt;/p&gt;
+</description>
+        <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2017/05/18/OpenVC/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2017/05/18/OpenVC/</guid>
+        
+        <category>OS</category>
+        
+        <category>iOS</category>
+        
+        <category>OpenVC</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Welcome to Tun Blog</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;“Hello World, Hello Blog.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;目录&quot;&gt;目录&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#preview&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#tools&quot;&gt;工具&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#build1&quot;&gt;搭建本地博客&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#build2&quot;&gt;部署线上博客&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#resources&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p id=&quot;preview&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;前言&quot;&gt;前言&lt;/h4&gt;
+
+&lt;p&gt;我说：要有blog。所以就有了Tun Blog。&lt;/p&gt;
+
+&lt;p&gt;&lt;a id=&quot;tools&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h4 id=&quot;工具&quot;&gt;工具&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;Jekylly&lt;/li&gt;
+  &lt;li&gt;GitHub Pages&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p id=&quot;build1&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;搭建本地博客&quot;&gt;搭建本地博客&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;安装Jeklly
+    &lt;blockquote&gt;
+      &lt;p&gt;gem install jekyll&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;创建blog文件
+    &lt;blockquote&gt;
+      &lt;p&gt;jekyll new blog&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;进入blog文件
+    &lt;blockquote&gt;
+      &lt;p&gt;cd blog&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;运行服务
+    &lt;blockquote&gt;
+      &lt;p&gt;jekyll serve&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+  &lt;li&gt;打开浏览器
+    &lt;blockquote&gt;
+      &lt;p&gt;http://localhost:4000&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;blog文件结构&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;_cofig.yml  #配置全局信息
+_posts      #存放博文(有一个markdown的默认博文)
+_site       #存放jekyll转化生成的页面
+about.md    #关于
+Gemfile
+Gemfile.lock
+index.md
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+
+&lt;hr /&gt;
+&lt;p&gt;jekyll常用命令&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jekyll build             #修改内容后使用，更新界面
+jekyll serve -B          #后台运行服务
+jekyll serve             #运行服务
+jekyll serve --watch     #可以边修改，边刷新界面
+ps aux|grep jekyllch     #查看jekyll后台运行的进程
+kill -9 线程号            #关闭线程，在同一个jekyll生成的文件下，只能运行一个进程 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;hr /&gt;
+
+&lt;p id=&quot;build2&quot;&gt;&lt;/p&gt;
+&lt;h4 id=&quot;部署线上博客&quot;&gt;部署线上博客&lt;/h4&gt;
+&lt;ol&gt;
+  &lt;li&gt;Create a new respository, Respository name -&amp;gt; yourGithubUserName.github.io&lt;/li&gt;
+  &lt;li&gt;Choose a theme on Settings&lt;/li&gt;
+  &lt;li&gt;Clone this Respository&lt;/li&gt;
+  &lt;li&gt;Copy the blog content file to Respository ,then commit change to github&lt;/li&gt;
+  &lt;li&gt;Open the URL : https://yourGithubUserName.github.io&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p id=&quot;resources&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;参考资料&quot;&gt;参考资料&lt;/h4&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekylly官网&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://pages.github.com/&quot;&gt;GitHub Pages文档&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/Huxpro/huxpro.github.io/blob/master/README.zh.md&quot;&gt;Theme by Hux&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2017/05/18/Hello/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2017/05/18/Hello/</guid>
+        
+        <category>生活</category>
+        
+        
+      </item>
     
       <item>
         <title>Example Post</title>
@@ -73,8 +207,8 @@
 译者 &lt;a href=&quot;http://weibo.com/huxpro&quot;&gt;黄玄&lt;/a&gt;，首次发布于 &lt;a href=&quot;http://huangxuan.me&quot;&gt;Hux Blog&lt;/a&gt;，转载请保留以上链接&lt;/p&gt;
 </description>
         <pubDate>Tue, 22 Sep 2015 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/huxblog-boilerplate/2015/09/22/js-version/</link>
-        <guid isPermaLink="true">http://localhost:4000/huxblog-boilerplate/2015/09/22/js-version/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2015/09/22/js-version/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2015/09/22/js-version/</guid>
         
         <category>前端开发</category>
         
@@ -120,8 +254,8 @@
 &lt;p&gt;&lt;a href=&quot;http://lab.hakim.se/reveal-js&quot;&gt;Reveal.js&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Thu, 09 Jul 2015 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/huxblog-boilerplate/2015/07/09/js-module-7day/</link>
-        <guid isPermaLink="true">http://localhost:4000/huxblog-boilerplate/2015/07/09/js-module-7day/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2015/07/09/js-module-7day/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2015/07/09/js-module-7day/</guid>
         
         <category>前端开发</category>
         
@@ -447,8 +581,8 @@
 &lt;/blockquote&gt;
 </description>
         <pubDate>Mon, 25 May 2015 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/huxblog-boilerplate/2015/05/25/js-module-loader/</link>
-        <guid isPermaLink="true">http://localhost:4000/huxblog-boilerplate/2015/05/25/js-module-loader/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2015/05/25/js-module-loader/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2015/05/25/js-module-loader/</guid>
         
         <category>前端开发</category>
         
@@ -735,8 +869,8 @@ Android’s source code is released by Google under open source licenses, althou
 &lt;p&gt;For Detail, Chromium OS based on &lt;a href=&quot;http://en.wikipedia.org/wiki/Gentoo_Linux&quot;&gt;Gentoo Linux&lt;/a&gt;, emm…&lt;/p&gt;
 </description>
         <pubDate>Tue, 14 Apr 2015 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/huxblog-boilerplate/2015/04/14/unix-linux-note/</link>
-        <guid isPermaLink="true">http://localhost:4000/huxblog-boilerplate/2015/04/14/unix-linux-note/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2015/04/14/unix-linux-note/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2015/04/14/unix-linux-note/</guid>
         
         <category>OS</category>
         
@@ -817,8 +951,8 @@ Android’s source code is released by Google under open source licenses, althou
 &lt;p&gt;—— Hux 后记于 2015.10&lt;/p&gt;
 </description>
         <pubDate>Thu, 29 Jan 2015 20:00:00 +0800</pubDate>
-        <link>http://localhost:4000/huxblog-boilerplate/2015/01/29/hello-2015/</link>
-        <guid isPermaLink="true">http://localhost:4000/huxblog-boilerplate/2015/01/29/hello-2015/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2015/01/29/hello-2015/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2015/01/29/hello-2015/</guid>
         
         <category>生活</category>
         

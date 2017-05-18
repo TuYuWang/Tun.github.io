@@ -1,0 +1,103 @@
+---
+layout:     post
+title:      "Welcome to Tun Blog"
+subtitle:   "Build Tun Blog"
+date:       2017-05-18
+author:     "Tun"
+header-img: "img/Tun-Hello.jpg"
+tags:
+    - 生活
+---
+
+> "Hello World, Hello Blog."
+
+## 目录
+* [前言](#preview)
+* [工具](#tools)
+* [搭建本地博客](#build1)
+* [部署线上博客](#build2)
+* [参考资料](#resources)
+
+<p id = "preview"></p>
+#### 前言
+
+我说：要有blog。所以就有了Tun Blog。
+
+
+
+<a id = "tools"></a>
+#### 工具
+* Jekylly
+* GitHub Pages 
+
+
+<p id = "build1"></p>
+#### 搭建本地博客
+1. 安装Jeklly 
+> gem install jekyll
+
+2. 创建blog文件
+> jekyll new blog
+
+3. 进入blog文件
+> cd blog
+
+4. 运行服务
+> jekyll serve
+
+5. 打开浏览器
+> http://localhost:4000
+
+---
+blog文件结构
+~~~
+_cofig.yml  #配置全局信息
+_posts      #存放博文(有一个markdown的默认博文)
+_site       #存放jekyll转化生成的页面
+about.md    #关于
+Gemfile
+Gemfile.lock
+index.md
+~~~
+---
+
+---
+jekyll常用命令
+~~~
+jekyll build             #修改内容后使用，更新界面
+jekyll serve -B          #后台运行服务
+jekyll serve             #运行服务
+jekyll serve --watch     #可以边修改，边刷新界面
+ps aux|grep jekyllch     #查看jekyll后台运行的进程
+kill -9 线程号            #关闭线程，在同一个jekyll生成的文件下，只能运行一个进程 
+~~~
+---
+
+<p id = "build2"></p>
+#### 部署线上博客
+1. Create a new respository, Respository name -> yourGithubUserName.github.io
+2. Choose a theme on Settings
+3. Clone this Respository
+4. Copy the blog content file to Respository ,then commit change to github
+5. Open the URL : https://yourGithubUserName.github.io
+
+<p id = "resources"></p>
+
+#### 参考资料
+
+* [Jekylly官网](http://jekyllrb.com/)
+* [GitHub Pages文档](https://pages.github.com/) 
+* [Theme by Hux](https://github.com/Huxpro/huxpro.github.io/blob/master/README.zh.md) 
+
+
+
+
+
+
+
+
+
+
+
+
+
