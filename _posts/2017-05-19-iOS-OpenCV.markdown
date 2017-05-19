@@ -21,9 +21,17 @@ tags:
 
 1. 'unordered_map' file not found!
 ![image](https://tuyuwang.github.io/img/OpenCV/Build-0.jpg)
-> build Setting -> C++ Standard Libarry -> libc++
+> 
+build Setting -> C++ Standard Libarry -> libc++
 
 
 
-2. ![img](https://tuyuwang.github.io/img/OpenCV/Build-1.png)
-> ![solve](https://tuyuwang.github.io/img/OpenCV/Build-2.png)
+2. before any Aplle headers 
+![img](https://tuyuwang.github.io/img/OpenCV/Build-1.png)
+> 确保openvc文件在最前面导入
+![solve](https://tuyuwang.github.io/img/OpenCV/Build-2.png)
+
+
+3. xxx.hpp header must be Compoled as C++
+![img](https://tuyuwang.github.io/img/OpenCV/Build-3.png)
+> 所有引用了C++的文件,其.m要改成.mm，.h保持不变
