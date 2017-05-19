@@ -178,16 +178,20 @@
 
 <h3 id="下载完成后直接拖进工程里然后我们开始编译">下载完成后，直接拖进工程里,然后我们开始编译</h3>
 <p>可能出现的问题：</p>
-<ol>
-  <li>‘unordered_map’ file not found! <img src="img/OpenCV/Build-0.jpg" alt="image" /></li>
-</ol>
 
-<p>解决: build Setting -&gt; C++ Standard Libarry -&gt; libc++</p>
 <ol>
-  <li>Detected Apple ‘NO’ macro definition, it can cause build conflicts. Please, include this header before any Apple headers.</li>
+  <li>‘unordered_map’ file not found!
+<img src="https://tuyuwang.github.io/img/OpenCV/Build-0.jpg" alt="image" />
+    <blockquote>
+      <p>build Setting -&gt; C++ Standard Libarry -&gt; libc++</p>
+    </blockquote>
+  </li>
+  <li><img src="https://tuyuwang.github.io/img/OpenCV/Build-1.png" alt="img" />
+    <blockquote>
+      <p><img src="https://tuyuwang.github.io/img/OpenCV/Build-2.png" alt="solve" /></p>
+    </blockquote>
+  </li>
 </ol>
-
-<p>解决: #import &lt;opencv2/opencv.hpp&gt;必须写在所有类导入之前</p>
 
 
                 <hr>

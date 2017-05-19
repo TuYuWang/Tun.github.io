@@ -17,9 +17,13 @@ tags:
 
 ### 下载完成后，直接拖进工程里,然后我们开始编译
 可能出现的问题：
-1. 'unordered_map' file not found! ![image](img/OpenCV/Build-0.jpg)
 
-解决: build Setting -> C++ Standard Libarry -> libc++
-2. Detected Apple 'NO' macro definition, it can cause build conflicts. Please, include this header before any Apple headers.
 
-解决: #import <opencv2/opencv.hpp>必须写在所有类导入之前
+1. 'unordered_map' file not found!
+![image](https://tuyuwang.github.io/img/OpenCV/Build-0.jpg)
+> build Setting -> C++ Standard Libarry -> libc++
+
+
+
+2. ![img](https://tuyuwang.github.io/img/OpenCV/Build-1.png)
+> ![solve](https://tuyuwang.github.io/img/OpenCV/Build-2.png)
