@@ -10,9 +10,9 @@
     <meta name="keyword"  content="">
     <link rel="shortcut icon" href="/tuyuwang.github.io/img/favicon.ico">
 
-    <title>Welcome to Tun Blog - 涂育旺的博客 | Tun Blog</title>
+    <title>OpenCV学习笔记 - 涂育旺的博客 | Tun Blog</title>
 
-    <link rel="canonical" href="http://localhost:4000/tuyuwang.github.io/2017/05/18/Hello/">
+    <link rel="canonical" href="http://localhost:4000/tuyuwang.github.io/2017/05/19/iOS-OpenCV/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/tuyuwang.github.io/css/bootstrap.min.css">
@@ -125,12 +125,12 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/tuyuwang.github.io/img/Tun-Hello.jpg" width="0" height="0"> -->
+<!-- <img src="/tuyuwang.github.io/img/Tun-iOS-OpenCV.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/tuyuwang.github.io/img/Tun-Hello.jpg')
+        background-image: url('/tuyuwang.github.io/img/Tun-iOS-OpenCV.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -140,15 +140,19 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tuyuwang.github.io/tags/#生活" title="生活">生活</a>
+                        <a class="tag" href="/tuyuwang.github.io/tags/#iOS" title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tuyuwang.github.io/tags/#OpenVC" title="OpenVC">OpenVC</a>
+                        
+                        <a class="tag" href="/tuyuwang.github.io/tags/#C++" title="C++">C++</a>
                         
                     </div>
-                    <h1>Welcome to Tun Blog</h1>
+                    <h1>OpenCV学习笔记</h1>
                     
                     
-                    <h2 class="subheading">Build Tun Blog</h2>
+                    <h2 class="subheading">集成问题、使用教程</h2>
                     
-                    <span class="meta">Posted by Tun on May 18, 2017</span>
+                    <span class="meta">Posted by Tun on May 19, 2017</span>
                 </div>
             </div>
         </div>
@@ -166,106 +170,24 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<blockquote>
-  <p>“Hello World, Hello Blog.”</p>
-</blockquote>
-
-<h2 id="目录">目录</h2>
+				<h3 id="安装opencv">安装OpenCV</h3>
 <ul>
-  <li><a href="#preview">前言</a></li>
-  <li><a href="#tools">工具</a></li>
-  <li><a href="#build1">搭建本地博客</a></li>
-  <li><a href="#build2">部署线上博客</a></li>
-  <li><a href="#resources">参考资料</a></li>
+  <li><a href="https://sourceforge.net/projects/opencvlibrary/files/opencv-ios/3.2.0/opencv-3.2.0-ios-framework.zip/download">官网下载</a></li>
+  <li><a href="https://baidu.com">百度云下载</a></li>
 </ul>
 
-<p id="preview"></p>
-<h4 id="前言">前言</h4>
-
-<p>我说：要有blog。所以就有了Tun Blog。</p>
-
-<p><a id="tools"></a></p>
-<h4 id="工具">工具</h4>
-<ul>
-  <li>Jekylly</li>
-  <li>GitHub Pages</li>
-</ul>
-
-<p id="build1"></p>
-<h4 id="搭建本地博客">搭建本地博客</h4>
+<h3 id="下载完成后直接拖进工程里然后我们开始编译">下载完成后，直接拖进工程里,然后我们开始编译</h3>
+<p>可能出现的问题：</p>
 <ol>
-  <li>安装Jeklly
-    <blockquote>
-      <p>gem install jekyll</p>
-    </blockquote>
-  </li>
-  <li>创建blog文件
-    <blockquote>
-      <p>jekyll new blog</p>
-    </blockquote>
-  </li>
-  <li>进入blog文件
-    <blockquote>
-      <p>cd blog</p>
-    </blockquote>
-  </li>
-  <li>运行服务
-    <blockquote>
-      <p>jekyll serve</p>
-    </blockquote>
-  </li>
-  <li>打开浏览器
-    <blockquote>
-      <p>http://localhost:4000</p>
-    </blockquote>
-  </li>
+  <li>‘unordered_map’ file not found! <img src="img/OpenCV/Build-0.jpg" alt="image" /></li>
 </ol>
 
-<hr />
-<p>blog文件结构</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>_cofig.yml  #配置全局信息
-_posts      #存放博文(有一个markdown的默认博文)
-_site       #存放jekyll转化生成的页面
-about.md    #关于
-Gemfile
-Gemfile.lock
-index.md
-</code></pre>
-</div>
-<hr />
-
-<hr />
-<p>jekyll常用命令</p>
-<div class="highlighter-rouge"><pre class="highlight"><code>jekyll build             #修改内容后使用，更新界面
-jekyll serve -B          #后台运行服务
-jekyll serve             #运行服务
-jekyll serve --watch     #可以边修改，边刷新界面
-ps aux|grep jekyllch     #查看jekyll后台运行的进程
-kill -9 线程号            #关闭线程，在同一个jekyll生成的文件下，只能运行一个进程 
-</code></pre>
-</div>
-<hr />
-
-<p id="build2"></p>
-<h4 id="部署线上博客">部署线上博客</h4>
+<p>解决: build Setting -&gt; C++ Standard Libarry -&gt; libc++</p>
 <ol>
-  <li>Create a new respository, Respository name -&gt; yourGithubUserName.github.io</li>
-  <li>Choose a theme on Settings</li>
-  <li>Clone this Respository</li>
-  <li>Copy the blog content file to Respository ,then commit change to github</li>
-  <li>Open the URL : https://yourGithubUserName.github.io</li>
+  <li>Detected Apple ‘NO’ macro definition, it can cause build conflicts. Please, include this header before any Apple headers.</li>
 </ol>
 
-<p id="resources"></p>
-
-<h4 id="参考资料">参考资料</h4>
-
-<ul>
-  <li><a href="http://jekyllrb.com/">Jekylly官网</a></li>
-  <li><a href="https://pages.github.com/">GitHub Pages文档</a></li>
-  <li><a href="https://github.com/Huxpro/huxpro.github.io/blob/master/README.zh.md">Theme by Hux</a></li>
-</ul>
-
+<p>解决: #import &lt;opencv2/opencv.hpp&gt;必须写在所有类导入之前</p>
 
 
                 <hr>
@@ -276,13 +198,9 @@ kill -9 线程号            #关闭线程，在同一个jekyll生成的文件�
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/tuyuwang.github.io/2015/09/22/js-version/" data-toggle="tooltip" data-placement="top" title="Example Post">&larr; Previous Post</a>
+                        <a href="/tuyuwang.github.io/2017/05/18/OpenVC/" data-toggle="tooltip" data-placement="top" title="OpenVC的学习日记">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/tuyuwang.github.io/2017/05/18/OpenVC/" data-toggle="tooltip" data-placement="top" title="OpenVC的学习日记">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
