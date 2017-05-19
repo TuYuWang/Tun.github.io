@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "OpenCV学习笔记"
-subtitle:   "集成问题、使用教程"
+subtitle:   "OpenCV是一个开源跨平台的的计算机视觉和机器学习库，可以用来做图片视频的处理、图形识别、机器学习等应用。"
 date:       2017-05-19
 author:     "Tun"
 header-img: "img/Tun-iOS-OpenCV.jpg"
