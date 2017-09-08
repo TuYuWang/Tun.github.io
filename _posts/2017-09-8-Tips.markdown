@@ -1,0 +1,52 @@
+---
+layout:     post
+title:      "iOS开发小技巧"
+subtitle:   "经验积累"
+date:       2017-09-8
+author:     "Tun"
+header-img: "img/Tun-timg.jpeg"
+tags:
+    - iOS
+---
+
+## 分类
+* [UITableView系列](#tableView)
+<!-- * [工具](#tools)
+* [搭建本地博客](#build1)
+* [部署线上博客](#build2)
+* [参考资料](#resources) -->
+
+<p id = "tableView"></p>
+### UITableView系列
+
+#### UITableViewCell灰线显示方案
+
+思路：重写UItableViewCell， 将需要显示的子视图都添加到contenView上，并进行约束，将cell的颜色设置为白色，contentView的颜色设置为灰色，定义接口设置contentView的edges，可通过传入正数或负数控制灰线显示顶部还是底部和灰线的高度
+
+代码如下：
+~~~
+extension UITableViewCell {
+    public func setLineHeight(_ height: Int) {
+        let top = max(height, 0)
+        let bottom = abs(min(height, 0))
+        contentView.snp.updateConstraints { (ConstraintMaker) in
+            ConstraintMaker.edges.equalTo(UIEdgeInsetsMake(top, 0, bottom, 0))
+        }
+        layoutSubviews()
+    }
+}
+
+~~~
+
+
+
+
+
+
+
+
+
+
+
+
+
