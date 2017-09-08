@@ -11,10 +11,6 @@ tags:
 
 ## 分类
 * [UITableView系列](#tableView)
-<!-- * [工具](#tools)
-* [搭建本地博客](#build1)
-* [部署线上博客](#build2)
-* [参考资料](#resources) -->
 
 <p id = "tableView"></p>
 ### UITableView系列
