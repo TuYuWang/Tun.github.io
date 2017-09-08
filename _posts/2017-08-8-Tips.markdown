@@ -11,6 +11,7 @@ tags:
 
 ## 分类
 * [UITableView系列](#tableView)
+* [UITextField系列](#textField)
 
 <p id = "tableView"></p>
 ### UITableView系列
@@ -34,6 +35,31 @@ extension UITableViewCell {
 
 ~~~
 
+<p id = "textField"></p>
+### UITextField系列
+
+#### 调整textField内容显示, 如图
+![image](https://tuyuwang.github.io/img/Tips/demo-0.png)
+
+代码如下：
+~~~
+
+//重写
+- (CGRect)leftViewRectForBounds:(CGRect)bounds
+{
+    CGRect iconRect = [super leftViewRectForBounds:bounds];
+    iconRect.origin.x += 10;// 右偏10
+    return iconRect;
+}
+
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
+    CGRect iconRect = [super textRectForBounds:bounds];
+    iconRect.origin.x += 10;// 右偏10
+    return iconRect;
+}
+
+~~~
 
 
 
