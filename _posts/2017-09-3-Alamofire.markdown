@@ -1,10 +1,10 @@
 ---
 layout:     post
 title:      "Alamofire实战记录"
-subtitle:   "经验积累"
+subtitle:   ""
 date:       2017-09-3
 author:     "Tun"
-header-img: "img/Tun-alamofire.png"
+header-img: "img/Tun-timg.jpeg"
 tags:
     - iOS
     - Swift
@@ -26,7 +26,7 @@ let loginRequest = EnterRouter.login(userPhone, userPassword)
 ~~~
 
 let baseURL = "http://xxxxx"
-var MPDParamters = [String: String]()
+var TNParamters = [String: String]()
 
 enum EnterRouter: URLRequestConvertible {
     
