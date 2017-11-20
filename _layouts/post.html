@@ -189,6 +189,9 @@ layout: default
 <!-- disqus 公共JS代码 end -->
 {% endif %}
 
+{% if site.intensedebate_comments %}
+      {% include intensedebate-comments.html %}
+{% endif %}
 
 {% if site.anchorjs %}
 <!-- async load function -->
@@ -225,3 +228,5 @@ layout: default
     }
 </style>
 {% endif %}
+
+
