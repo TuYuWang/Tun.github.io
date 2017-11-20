@@ -189,9 +189,18 @@ layout: default
 <!-- disqus 公共JS代码 end -->
 {% endif %}
 
+<!-- intensedebare 评论-->
 {% if site.intensedebate_comments %}
       {% include intensedebate-comments.html %}
 {% endif %}
+<!-- intensedebare 评论-->
+
+<!-- baidu-analysis 百度统计-->
+{% if site.baidu-analysis %}
+      {% include baidu-analysis.html %}
+{% endif %}
+<!-- baidu-analysis 百度统计-->
+
 
 {% if site.anchorjs %}
 <!-- async load function -->
