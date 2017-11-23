@@ -5,8 +5,8 @@
     <description>山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜</description>
     <link>http://localhost:4000/tuyuwang.github.io/</link>
     <atom:link href="http://localhost:4000/tuyuwang.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 20 Nov 2017 14:45:27 +0800</pubDate>
-    <lastBuildDate>Mon, 20 Nov 2017 14:45:27 +0800</lastBuildDate>
+    <pubDate>Thu, 23 Nov 2017 17:35:31 +0800</pubDate>
+    <lastBuildDate>Thu, 23 Nov 2017 17:35:31 +0800</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
     
       <item>
@@ -174,14 +174,14 @@ enum EnterRouter: URLRequestConvertible {
 
 &lt;h2 id=&quot;目录&quot;&gt;目录&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;#preview&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;preview&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#tools&quot;&gt;工具&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#build1&quot;&gt;搭建本地博客&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#build2&quot;&gt;部署线上博客&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#resources&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p id=&quot;preview&quot;&gt;&lt;/p&gt;
+&lt;p class=&quot;preview&quot;&gt;&lt;/p&gt;
 &lt;h4 id=&quot;前言&quot;&gt;前言&lt;/h4&gt;
 
 &lt;p&gt;我说：要有blog。所以就有了Tun Blog。&lt;/p&gt;
@@ -268,8 +268,8 @@ kill -9 线程号            #关闭线程，在同一个jekyll生成的文件�
 
 </description>
         <pubDate>Thu, 18 May 2017 00:00:00 +0800</pubDate>
-        <link>http://localhost:4000/tuyuwang.github.io/2017/05/18/Hello/</link>
-        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2017/05/18/Hello/</guid>
+        <link>http://localhost:4000/tuyuwang.github.io/2017/05/18/%E7%94%9F%E6%B4%BB/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2017/05/18/%E7%94%9F%E6%B4%BB/</guid>
         
         <category>生活</category>
         
