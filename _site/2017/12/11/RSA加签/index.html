@@ -10,9 +10,9 @@
     <meta name="keyword"  content="涂育旺,tuyuwang,Tun,图欲旺,iOS,swift,Unity3D,涂,博客">
     <link rel="shortcut icon" href="/tuyuwang.github.io/img/favicon.ico">
 
-    <title>Alamofire实战记录 - 涂育旺的博客 | Tun Blog</title>
+    <title>iOS RSA加签 - 涂育旺的博客 | Tun Blog</title>
 
-    <link rel="canonical" href="http://localhost:4000/tuyuwang.github.io/2017/09/03/Alamofire/">
+    <link rel="canonical" href="http://localhost:4000/tuyuwang.github.io/2017/12/11/RSA%E5%8A%A0%E7%AD%BE/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/tuyuwang.github.io/css/bootstrap.min.css">
@@ -135,12 +135,12 @@ var _hmt = _hmt || [];
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/tuyuwang.github.io/img/Tun-timg.jpeg" width="0" height="0"> -->
+<!-- <img src="/tuyuwang.github.io/img/BG-RSA.jpeg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('/tuyuwang.github.io/img/Tun-timg.jpeg')
+        background-image: url('/tuyuwang.github.io/img/BG-RSA.jpeg')
     }
 </style>
 <header class="intro-header" >
@@ -152,15 +152,13 @@ var _hmt = _hmt || [];
                         
                         <a class="tag" href="/tuyuwang.github.io/tags/#iOS" title="iOS">iOS</a>
                         
-                        <a class="tag" href="/tuyuwang.github.io/tags/#Swift" title="Swift">Swift</a>
-                        
                     </div>
-                    <h1>Alamofire实战记录</h1>
+                    <h1>iOS RSA加签</h1>
                     
                     
-                    <h2 class="subheading"></h2>
+                    <h2 class="subheading">SHA-X with RSA(与Java同步)</h2>
                     
-                    <span class="meta">Posted by Tun on September 3, 2017</span>
+                    <span class="meta">Posted by Tun on December 11, 2017</span>
                 </div>
             </div>
         </div>
@@ -178,84 +176,128 @@ var _hmt = _hmt || [];
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h3 id="urlrequestconvertible-协议的使用">URLRequestConvertible 协议的使用</h3>
+				<p>先贴最终解决方案: <a href="https://github.com/TuYuWang/iOSSignAndVerify">SignAndVerify byTun</a> 支持SHA1、SHA384、SHA256、SHA224、SHA512对摘要数据进行加签。</p>
 
-<p>创建一个路由枚举，调用效果如下:</p>
+<p>故事开端: 服务端人员给我一个私钥字符串(没有头部和尾部字符串)，我需要用私钥对摘要数据进行加签后再发送给服务端进行公钥验签。</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>let loginRequest = EnterRouter.login(userPhone, userPassword)
-        request(loginRequest).responseJSON { (respone) in
-            print(JSON(respone.result.value ?? ""))
-        }
+<p>踩坑:服务端生成的私钥字符串是PKCS8格式的，而我们需要的是PKCS1格式的私钥字符串。可以通过字符串长度判断是哪种格式的。<a href="http://www.5ixuexiwang.com/str/length.php">在线字符串长度计算</a>.</p>
 
+<p>PKCS#1对应的私钥字符串长度为824(按1024取模)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl genrsa -out private_key.pem 1024
 </code></pre></div></div>
 
-<p>代码如下：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
-let baseURL = "http://xxxxx"
-var TNParamters = [String: String]()
+<p>PKCS#8对应的私钥字符串长度为861。</p>
 
-enum EnterRouter: URLRequestConvertible {
-    
-    case login(String, String)
-    case regist(String, String, String)
-    case logout
-    
-    private var httpMethod: HTTPMethod {
-        return .post
-    }
-    
-    private var method: String {
-        switch self {
-        case .login:
-            return "user.login"
-        case .regist:
-            return "user.regist"
-        case .logout:
-            return "user.logout"
-        }
-    }
-    
-    private var paramters: [String: Any] {
-        
-        switch self {
-        case .login(let userName, let password):
-            TNParamters.updateValue(userName, forKey: "phoneNo")
-            TNParamters.updateValue(password, forKey: "password")
-            return baseParamters
-            
-        case .regist(let userName, let password, let verifyCode):
-            
-            TNParamters.updateValue(userName, forKey: "phoneNo")
-            TNParamters.updateValue(password, forKey: "password")
-            TNParamters.updateValue(verifyCode, forKey: "verifyCode")
-            return baseParamters
-            
-        case .logout:
-            
-            return baseParamters
-        }
-    }
-    
-    private var baseParamters: [String: Any] {
-            TNParamters.updateValue(method, forKey: "method")
-            return TNParamters
-    }
-    
-    func asURLRequest() throws -&gt; URLRequest {
-        
-        let url = URL(string: baseURL)
-        var request = URLRequest(url: url!)
-        request.httpMethod = httpMethod.rawValue
-        do {
-            let result = try URLEncoding.default.encode(request, with: paramters)
-            return result
-        } catch let error {
-            return request
-        }
-    }
+<p>也可以通过以下方法判断私钥的格式:</p>
 
+<p>PKCS:美国RSA数据安全公司及其合作伙伴制定的一组公钥密码学标准</p>
 
+<p>PKCS#1:定义RSA公开密钥算法加密和签名机制，主要用于组织PKCS#7中所描述的数字签名和数字信封。</p>
+
+<p>PKCS#8：描述私有密钥信息格式，该信息包括公开密钥算法的私有密钥以及可选的属性集等.</p>
+
+<p>RSA Public Key file (PKCS#1)
+The RSA Public key PEM file is specific for RSA keys.
+It starts and ends with the tags:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----BEGIN RSA PUBLIC KEY-----
+BASE64 ENCODED DATA
+-----END RSA PUBLIC KEY-----
 </code></pre></div></div>
+
+<p>RSA Private Key file (PKCS#1)
+The RSA private key PEM file is specific for RSA keys.
+It starts and ends with the tags:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----BEGIN RSA PRIVATE KEY-----
+BASE64 ENCODED DATA
+-----END RSA PRIVATE KEY-----
+</code></pre></div></div>
+
+<p>Public Key file (PKCS#8)
+Because RSA is not used exclusively inside X509 and SSL/TLS, a more generic key format is available in the form of PKCS#8, that identifies the type of public key and contains the relevant data.
+It starts and ends with the tags:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----BEGIN PUBLIC KEY-----
+BASE64 ENCODED DATA
+-----END PUBLIC KEY-----
+</code></pre></div></div>
+
+<p>Private Key file (PKCS#8)
+Because RSA is not used exclusively inside X509 and SSL/TLS, a more generic key format is available in the form of PKCS#8, that identifies the type of private key and contains the relevant data.
+The unencrypted PKCS#8 encoded data starts and ends with the tags:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-----BEGIN PRIVATE KEY-----
+BASE64 ENCODED DATA
+-----END PRIVATE KEY-----
+</code></pre></div></div>
+
+<p>明白了问题出在哪，现在就来说说解决方案：</p>
+
+<p>1、简单粗暴点就是让后台给你PKCS1格式的私钥字符串。<a href="http://blog.csdn.net/u010725842/article/details/50614030">java转openssl的RSA算法公私钥</a></p>
+
+<p>2、自己转换(PKCS#8-&gt;PKCS#1)</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openssl pkcs8 -in pkcs8.pem -nocrypt -out pri_key.pem
+</code></pre></div></div>
+
+<p>3、用openssl生成iOS／Java使用的公私钥</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//生成模长为1024bit的私钥文件private_key.pem
+openssl genrsa -out private_key.pem 1024
+
+//生成证书请求文件rsaCertReq.csr.(这一步会提示输入国家、省份、mail等信息，可以根据实际情况填写，或者全部不用填写，直接全部敲回车.)
+openssl req -new -key private_key.pem -out rsaCerReq.csr
+
+//生成证书rsaCert.crt，并设置有效时间为10年
+openssl x509 -req -days 3650 -in rsaCerReq.csr -signkey private_key.pem -out rsaCert.crt
+
+//生成供iOS使用的公钥文件public_key.der
+openssl x509 -outform der -in rsaCert.crt -out public_key.der
+
+//生成供iOS使用的私钥文件private_key.p12.(这一步会提示给私钥文件设置密码，直接输入想要设置密码即可，然后敲回车，然后再验证刚才设置的密码，再次输入密码，然后敲回车，完毕！)
+openssl pkcs12 -export -out private_key.p12 -inkey private_key.pem -in rsaCert.crt
+
+//生成供Java使用的公钥rsa_public_key.pem
+openssl rsa -in private_key.pem -out rsa_public_key.pem -pubout
+
+//生成供Java使用的私钥pkcs8_private_key.pem
+openssl pkcs8 -topk8 -in private_key.pem -out pkcs8_private_key.pem -nocrypt
+</code></pre></div></div>
+
+<p>Nice!有了正确的私钥后，接下来就是加签了，使用文件路径读取私钥的请看这里<a href="http://blog.csdn.net/zhangmengleiblog/article/details/51362761">任意门</a></p>
+
+<p>这里我使用的是这个框架<a href="https://github.com/yubin-X/iOSSignAndVerify">SignAndVerify</a>,这个框架默认是通过私钥字符串用SHA1算法加签，而服务端是需要用SHA384算法进行加签，所以就fork一下，然后进行拓展<a href="https://github.com/TuYuWang/iOSSignAndVerify">SignAndVerify byTun</a></p>
+
+<h4 id="基本概念">基本概念：</h4>
+
+<p>数字签名：</p>
+<ul>
+  <li>
+    <p>只有信息的发送者才能产生的别人无法伪造的一段数字串，对信息发送者发送信息真实性的有效证明。</p>
+  </li>
+  <li>
+    <p>发送报文时，发送方用一个哈希函数从报文文本中生成报文摘要，然后用私钥对摘要进行加密，将加密后的摘要作为数字签名和报文一起发送给接收方。接收方首先用与发送方一样的哈希函数从接收到的原始报文中计算出报文摘要，接着再用发送方的公钥对报文附加的数字签名进行解密，如果这两个摘要相同，那么接收方就能确认该数字签名是发送方的。</p>
+  </li>
+  <li>
+    <p>作用: 1、能确定消息确实是由发送方签名并发出来的。2、数字签名能确定消息的完整性。</p>
+  </li>
+</ul>
+
+<p>哈希函数(哈希算法):将任意长度的二进制值映射为较短的固定长度的二进制值，这个小的二进制值称为哈希值。它是一种单向密码体制,即它是一个从明文到密文的不可逆的映射,只有加密过程,没有解密过程。</p>
+
+<p>RSA算法:</p>
+<ul>
+  <li>
+    <p>1977年由Ron Rivest、Adi Shamirh和LenAdleman发明的，RSA就是取自他们三个人的名字。算法基于一个数论：将两个大素数相乘非常容易，但要对这个乘积的结果进行因式分解却非常困难，因此可以把乘积公开作为公钥。该算法能够抵抗目前已知的所有密码攻击。RSA算法是一种非对称算法，算法需要一对密钥，使用其中一个加密，需要使用另外一个才能解密。</p>
+  </li>
+  <li>
+    <p>作用: 1、用私钥在客户端加签，然后公钥在服务器用公钥验签。防抵赖，防止别人模拟我们的客户端来攻击我们的服务器，导致瘫痪。2、用公钥加密数据，以及服务器端用私钥解密。</p>
+  </li>
+</ul>
+
+<p>iOS加解密(导入Security.framework)</p>
+
+<ul>
+  <li>SecKeyEncrypt：使用公钥对数据进行加密。</li>
+  <li>SecKeyDecrypt：使用私钥对数据进行解密。</li>
+  <li>SecKeyRawVerify：使用公钥对数字签名和数据进行验证，以确认该数据的来源合法性。</li>
+  <li>SecKeyRawSign：使用私钥对数据进行摘要并生成数字签名。</li>
+</ul>
 
 
 
@@ -267,13 +309,9 @@ enum EnterRouter: URLRequestConvertible {
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/tuyuwang.github.io/2017/05/18/%E7%94%9F%E6%B4%BB/" data-toggle="tooltip" data-placement="top" title="Welcome to Tun Blog">&larr; Previous Post</a>
+                        <a href="/tuyuwang.github.io/2017/09/08/Tips/" data-toggle="tooltip" data-placement="top" title="iOS开发小技巧">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/tuyuwang.github.io/2017/09/08/Tips/" data-toggle="tooltip" data-placement="top" title="iOS开发小技巧">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -336,7 +374,7 @@ enum EnterRouter: URLRequestConvertible {
       
     <script>
 	var idcomments_acct = '014954845442297f3a557369285c4376';
-	var idcomments_post_id = '/2017/09/03/Alamofire/';
+	var idcomments_post_id = '/2017/12/11/RSA%E5%8A%A0%E7%AD%BE/';
 	var idcomments_post_url;
 	</script>
 <span id="IDCommentsPostTitle" style="display:none"></span>

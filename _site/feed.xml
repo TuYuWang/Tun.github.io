@@ -5,9 +5,144 @@
     <description>山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜</description>
     <link>http://localhost:4000/tuyuwang.github.io/</link>
     <atom:link href="http://localhost:4000/tuyuwang.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Thu, 23 Nov 2017 17:35:31 +0800</pubDate>
-    <lastBuildDate>Thu, 23 Nov 2017 17:35:31 +0800</lastBuildDate>
+    <pubDate>Thu, 14 Dec 2017 14:13:15 +0800</pubDate>
+    <lastBuildDate>Thu, 14 Dec 2017 14:13:15 +0800</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
+    
+      <item>
+        <title>iOS RSA加签</title>
+        <description>&lt;p&gt;先贴最终解决方案: &lt;a href=&quot;https://github.com/TuYuWang/iOSSignAndVerify&quot;&gt;SignAndVerify byTun&lt;/a&gt; 支持SHA1、SHA384、SHA256、SHA224、SHA512对摘要数据进行加签。&lt;/p&gt;
+
+&lt;p&gt;故事开端: 服务端人员给我一个私钥字符串(没有头部和尾部字符串)，我需要用私钥对摘要数据进行加签后再发送给服务端进行公钥验签。&lt;/p&gt;
+
+&lt;p&gt;踩坑:服务端生成的私钥字符串是PKCS8格式的，而我们需要的是PKCS1格式的私钥字符串。可以通过字符串长度判断是哪种格式的。&lt;a href=&quot;http://www.5ixuexiwang.com/str/length.php&quot;&gt;在线字符串长度计算&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;PKCS#1对应的私钥字符串长度为824(按1024取模)&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl genrsa -out private_key.pem 1024
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;PKCS#8对应的私钥字符串长度为861。&lt;/p&gt;
+
+&lt;p&gt;也可以通过以下方法判断私钥的格式:&lt;/p&gt;
+
+&lt;p&gt;PKCS:美国RSA数据安全公司及其合作伙伴制定的一组公钥密码学标准&lt;/p&gt;
+
+&lt;p&gt;PKCS#1:定义RSA公开密钥算法加密和签名机制，主要用于组织PKCS#7中所描述的数字签名和数字信封。&lt;/p&gt;
+
+&lt;p&gt;PKCS#8：描述私有密钥信息格式，该信息包括公开密钥算法的私有密钥以及可选的属性集等.&lt;/p&gt;
+
+&lt;p&gt;RSA Public Key file (PKCS#1)
+The RSA Public key PEM file is specific for RSA keys.
+It starts and ends with the tags:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-----BEGIN RSA PUBLIC KEY-----
+BASE64 ENCODED DATA
+-----END RSA PUBLIC KEY-----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;RSA Private Key file (PKCS#1)
+The RSA private key PEM file is specific for RSA keys.
+It starts and ends with the tags:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-----BEGIN RSA PRIVATE KEY-----
+BASE64 ENCODED DATA
+-----END RSA PRIVATE KEY-----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Public Key file (PKCS#8)
+Because RSA is not used exclusively inside X509 and SSL/TLS, a more generic key format is available in the form of PKCS#8, that identifies the type of public key and contains the relevant data.
+It starts and ends with the tags:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-----BEGIN PUBLIC KEY-----
+BASE64 ENCODED DATA
+-----END PUBLIC KEY-----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Private Key file (PKCS#8)
+Because RSA is not used exclusively inside X509 and SSL/TLS, a more generic key format is available in the form of PKCS#8, that identifies the type of private key and contains the relevant data.
+The unencrypted PKCS#8 encoded data starts and ends with the tags:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;-----BEGIN PRIVATE KEY-----
+BASE64 ENCODED DATA
+-----END PRIVATE KEY-----
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;明白了问题出在哪，现在就来说说解决方案：&lt;/p&gt;
+
+&lt;p&gt;1、简单粗暴点就是让后台给你PKCS1格式的私钥字符串。&lt;a href=&quot;http://blog.csdn.net/u010725842/article/details/50614030&quot;&gt;java转openssl的RSA算法公私钥&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;2、自己转换(PKCS#8-&amp;gt;PKCS#1)&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;openssl pkcs8 -in pkcs8.pem -nocrypt -out pri_key.pem
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;3、用openssl生成iOS／Java使用的公私钥&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//生成模长为1024bit的私钥文件private_key.pem
+openssl genrsa -out private_key.pem 1024
+
+//生成证书请求文件rsaCertReq.csr.(这一步会提示输入国家、省份、mail等信息，可以根据实际情况填写，或者全部不用填写，直接全部敲回车.)
+openssl req -new -key private_key.pem -out rsaCerReq.csr
+
+//生成证书rsaCert.crt，并设置有效时间为10年
+openssl x509 -req -days 3650 -in rsaCerReq.csr -signkey private_key.pem -out rsaCert.crt
+
+//生成供iOS使用的公钥文件public_key.der
+openssl x509 -outform der -in rsaCert.crt -out public_key.der
+
+//生成供iOS使用的私钥文件private_key.p12.(这一步会提示给私钥文件设置密码，直接输入想要设置密码即可，然后敲回车，然后再验证刚才设置的密码，再次输入密码，然后敲回车，完毕！)
+openssl pkcs12 -export -out private_key.p12 -inkey private_key.pem -in rsaCert.crt
+
+//生成供Java使用的公钥rsa_public_key.pem
+openssl rsa -in private_key.pem -out rsa_public_key.pem -pubout
+
+//生成供Java使用的私钥pkcs8_private_key.pem
+openssl pkcs8 -topk8 -in private_key.pem -out pkcs8_private_key.pem -nocrypt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Nice!有了正确的私钥后，接下来就是加签了，使用文件路径读取私钥的请看这里&lt;a href=&quot;http://blog.csdn.net/zhangmengleiblog/article/details/51362761&quot;&gt;任意门&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;这里我使用的是这个框架&lt;a href=&quot;https://github.com/yubin-X/iOSSignAndVerify&quot;&gt;SignAndVerify&lt;/a&gt;,这个框架默认是通过私钥字符串用SHA1算法加签，而服务端是需要用SHA384算法进行加签，所以就fork一下，然后进行拓展&lt;a href=&quot;https://github.com/TuYuWang/iOSSignAndVerify&quot;&gt;SignAndVerify byTun&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;基本概念&quot;&gt;基本概念：&lt;/h4&gt;
+
+&lt;p&gt;数字签名：&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;只有信息的发送者才能产生的别人无法伪造的一段数字串，对信息发送者发送信息真实性的有效证明。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;发送报文时，发送方用一个哈希函数从报文文本中生成报文摘要，然后用私钥对摘要进行加密，将加密后的摘要作为数字签名和报文一起发送给接收方。接收方首先用与发送方一样的哈希函数从接收到的原始报文中计算出报文摘要，接着再用发送方的公钥对报文附加的数字签名进行解密，如果这两个摘要相同，那么接收方就能确认该数字签名是发送方的。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;作用: 1、能确定消息确实是由发送方签名并发出来的。2、数字签名能确定消息的完整性。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;哈希函数(哈希算法):将任意长度的二进制值映射为较短的固定长度的二进制值，这个小的二进制值称为哈希值。它是一种单向密码体制,即它是一个从明文到密文的不可逆的映射,只有加密过程,没有解密过程。&lt;/p&gt;
+
+&lt;p&gt;RSA算法:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;1977年由Ron Rivest、Adi Shamirh和LenAdleman发明的，RSA就是取自他们三个人的名字。算法基于一个数论：将两个大素数相乘非常容易，但要对这个乘积的结果进行因式分解却非常困难，因此可以把乘积公开作为公钥。该算法能够抵抗目前已知的所有密码攻击。RSA算法是一种非对称算法，算法需要一对密钥，使用其中一个加密，需要使用另外一个才能解密。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;作用: 1、用私钥在客户端加签，然后公钥在服务器用公钥验签。防抵赖，防止别人模拟我们的客户端来攻击我们的服务器，导致瘫痪。2、用公钥加密数据，以及服务器端用私钥解密。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;iOS加解密(导入Security.framework)&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;SecKeyEncrypt：使用公钥对数据进行加密。&lt;/li&gt;
+  &lt;li&gt;SecKeyDecrypt：使用私钥对数据进行解密。&lt;/li&gt;
+  &lt;li&gt;SecKeyRawVerify：使用公钥对数字签名和数据进行验证，以确认该数据的来源合法性。&lt;/li&gt;
+  &lt;li&gt;SecKeyRawSign：使用私钥对数据进行摘要并生成数字签名。&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        <pubDate>Mon, 11 Dec 2017 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2017/12/11/RSA%E5%8A%A0%E7%AD%BE/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2017/12/11/RSA%E5%8A%A0%E7%AD%BE/</guid>
+        
+        <category>iOS</category>
+        
+        
+      </item>
     
       <item>
         <title>iOS开发小技巧</title>
@@ -174,14 +309,14 @@ enum EnterRouter: URLRequestConvertible {
 
 &lt;h2 id=&quot;目录&quot;&gt;目录&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;preview&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#preview&quot;&gt;前言&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#tools&quot;&gt;工具&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#build1&quot;&gt;搭建本地博客&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#build2&quot;&gt;部署线上博客&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#resources&quot;&gt;参考资料&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p class=&quot;preview&quot;&gt;&lt;/p&gt;
+&lt;p id=&quot;preview&quot;&gt;&lt;/p&gt;
 &lt;h4 id=&quot;前言&quot;&gt;前言&lt;/h4&gt;
 
 &lt;p&gt;我说：要有blog。所以就有了Tun Blog。&lt;/p&gt;

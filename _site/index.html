@@ -7,7 +7,7 @@
     <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜">
-    <meta name="keyword"  content="涂育旺，tuyuwang，Tun，图欲旺">
+    <meta name="keyword"  content="涂育旺,tuyuwang,Tun,图欲旺,iOS,swift,Unity3D,涂,博客">
     <link rel="shortcut icon" href="/tuyuwang.github.io/img/favicon.ico">
 
     <title>涂育旺的博客 | Tun Blog</title>
@@ -164,6 +164,30 @@ var _hmt = _hmt || [];
             ">
     			
 <div class="post-preview">
+    <a href="/tuyuwang.github.io/2017/12/11/RSA%E5%8A%A0%E7%AD%BE/">
+        <h2 class="post-title">
+            iOS RSA加签
+        </h2>
+        
+        <h3 class="post-subtitle">
+            SHA-X with RSA(与Java同步)
+        </h3>
+        
+        <div class="post-content-preview">
+            先贴最终解决方案: SignAndVerify byTun 支持SHA1、SHA384、SHA256、SHA224、SHA512对摘要数据进行加签。
+
+故事开端: 服务端人员给我一个私钥字符串(没有头部和尾部字符串)，我需要用私钥对摘要数据进行加签后再发送给服务端进行公钥验签。
+
+踩坑:服务端生成的私钥字符串是PKCS8格式的，而我们需要的是PKCS1格式的私钥字符串。可以通过字符串长度判断...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Tun on December 11, 2017
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
     <a href="/tuyuwang.github.io/2017/09/08/Tips/">
         <h2 class="post-title">
             iOS开发小技巧
@@ -300,7 +324,7 @@ let loginRequest = EnterRouter.login(userPhone, userPassword)
                             
                         
                             
-                                <a href="/tuyuwang.github.io/tags/#iOS" title="iOS" rel="2">
+                                <a href="/tuyuwang.github.io/tags/#iOS" title="iOS" rel="3">
                                     iOS
                                 </a>
                             
