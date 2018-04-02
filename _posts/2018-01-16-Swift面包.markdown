@@ -1,0 +1,133 @@
+---
+layout:     post
+title:      "Swift面包"
+subtitle:   "Github优秀开源框架阅读笔记"
+date:       "2018-01-16"
+author:     "Tun"
+header-img: "img/swift-openSource.png"
+tags:
+    - iOS
+    - Swift
+---
+
+1、[expanding-collection](https://github.com/Ramotion/expanding-collection)源码摘录
+
+使用枚举值的rawValue来表示图片名称
+~~~
+enum Asset: String {
+
+    case backgroundImage = "BackgroundImage"
+    case closeButton = "CloseButton"
+    case dots
+    case face1
+    case face2
+    case heand
+    case icons
+    case image
+    case item0
+    case item1
+    case item2
+    case item3
+    case locationButton
+    case map
+    case pinIcon
+    case searchIcon
+    case stars
+    case title = "Title"
+
+    //为枚举值添加计算属性，方便获取image
+    var image: Image {
+        let bundle = Bundle(for: BundleToken.self)
+        #if os(iOS) || os(tvOS) || os(watchOS)
+            let image = Image(named: rawValue, in: bundle, compatibleWith: nil)
+        #elseif os(OSX)
+            let image = bundle.image(forResource: rawValue)
+        #endif
+        guard let result = image else { fatalError("Unable to load image \(rawValue).") }
+        return result
+    }
+}
+
+//调用
+let image = Asset.backgroundImage.image
+~~~
+
+拓展: 实现字符串获取图片的另一种方式
+
+~~~
+extension String {
+    var toImage: UIImage? {
+        return UIImage(named: self)
+    }
+}
+
+//调用
+let image = "backgroundImage".toImage
+~~~
+
+typealias的妙用
+
+~~~
+  typealias ItemInfo = (imageName: String, title: String)
+  fileprivate let items: [ItemInfo] = [("item0", "Boston"), ("item1", "New York"), ("item2", "San Francisco"), ("item3", "Washington")]
+
+//调用(类似于类调用属性的形式)
+  let info = items[index]
+  cell.backgroundImageView?.image = UIImage(named: info.imageName)
+  cell.customTitle.text = info.title
+~~~
+
+范型初始化工具，特点：简洁明了，为实例设置属性时不用写实例名称，只用$0就行
+
+~~~
+internal func Init<Type>(_ value: Type, block: (_ object: Type) -> Void) -> Type {
+    block(value)
+    return value
+}
+
+//调用
+let upGesture = Init(UISwipeGestureRecognizer(target: self, action: #selector(DemoViewController.swipeHandler(_:)))) {
+    $0.direction = .up
+}
+  view.addGestureRecognizer(upGesture)
+
+~~~
+
+遍历所有的子视图，并传给外界
+
+~~~
+
+protocol SubviewsForEach {
+    func subviewsForEach(_ f: (UIView) -> Void)
+}
+
+extension SubviewsForEach where Self: UIView {
+
+    func subviewsForEach(_ f: (UIView) -> Void) {
+        forEachView(self, f: f)
+    }
+
+    fileprivate func forEachView(_ view: UIView, f: (UIView) -> Void) {
+        view.subviews.forEach {
+            f($0)
+
+            if $0.subviews.count > 0 {
+                forEachView($0, f: f)
+            }
+        }
+    }
+}
+
+extension UIView: SubviewsForEach {}
+
+//调用
+copyView.frontContainerView.subviewsForEach { 
+    if $0.tag == Constants.HideKey { 
+        $0.alpha = 0 
+    } 
+}
+~~~
+
+2、Kinfisher源码摘录
+
+3、SwiftyJSON源码摘录
