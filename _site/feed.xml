@@ -5,9 +5,583 @@
     <description>山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜</description>
     <link>http://localhost:4000/tuyuwang.github.io/</link>
     <atom:link href="http://localhost:4000/tuyuwang.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 02 Apr 2018 13:34:34 +0800</pubDate>
-    <lastBuildDate>Mon, 02 Apr 2018 13:34:34 +0800</lastBuildDate>
+    <pubDate>Fri, 13 Jul 2018 17:34:13 +0800</pubDate>
+    <lastBuildDate>Fri, 13 Jul 2018 17:34:13 +0800</lastBuildDate>
     <generator>Jekyll v3.6.2</generator>
+    
+      <item>
+        <title>Python VS 拉钩</title>
+        <description>&lt;h4 id=&quot;前言&quot;&gt;前言&lt;/h4&gt;
+
+&lt;p&gt;俗话说实践出真知，理论学习不如动手实践的印象深，于是直接进入Python实战阶段，通过爬取拉钩的岗位信息，并做筛选，针对符合条件的岗位进行自动化投递简历这个项目来检验最近所学。&lt;/p&gt;
+
+&lt;p&gt;首先分析一下怎么实现:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#login&quot;&gt;模拟登陆拉钩网&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#search&quot;&gt;根据岗位确定需要爬取的总页数&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#link&quot;&gt;找出每一页岗位信息的链接&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#ip&quot;&gt;添加代理和针对性的header&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#start&quot;&gt;开始爬虫&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#data&quot;&gt;对数据进行处理&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#filter&quot;&gt;对符合条件的岗位进行投递简历&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;a href=&quot;#timer&quot;&gt;定时开启任务&lt;/a&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;使用的工具:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Scrapy&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Selenium&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Firefox&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Pandas&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里使用&lt;a href=&quot;http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/overview.html&quot;&gt;Scrapy&lt;/a&gt;为爬虫的主体框架，用&lt;a href=&quot;https://www.cnblogs.com/BigFishFly/p/6380024.html&quot;&gt;Selenium&lt;/a&gt;来进行模拟登陆请求和使用&lt;a href=&quot;http://pandas.pydata.org/pandas-docs/stable/&quot;&gt;Pandas&lt;/a&gt;进行数据处理&lt;/p&gt;
+
+&lt;p&gt;先讲解一下Scrapy的基本知识 -&amp;gt; &lt;a href=&quot;#jump&quot;&gt;略过&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Scrapy(1.5.0)常用命令:&lt;/p&gt;
+
+&lt;p&gt;1、初始化爬虫项目:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;scrapy startproject projectName [project_dir]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;2、创建爬虫:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;scrapy genspider spiderName domain.com&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;3、运行爬虫:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;scrapy crawl spiderName&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;ok,使用以上命令创建拉钩项目&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//在本目录下创建项目
+scrapy startproject lagou
+scrapy genspider lg lagou.com
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;执行完毕后，呈现以下目录结构&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.
+├── scrapy.cfg
+├── lagou                   //项目文件夹
+├── |
+├── ├── __init__.py 
+├── └── __pycache__
+├── ├── items.py            //数据模型，保存爬取到的数据的容器
+├── └── middlewares.py      //中间件，用于截取请求，增加自定义操作
+├──    ├── pipelines.py     //管道，处理爬取的数据
+├──    └── settings.py      //配置文件，用于配置全局
+├──    └── spiders          //爬虫文件夹
+├──         ├── __init__.py 
+├──         └── __pycache__
+├──         └── lg.py       //lg爬虫，爬虫操作入口
+      
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p id=&quot;jump&quot;&gt;&lt;/p&gt;
+&lt;p id=&quot;login&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;模拟登陆拉钩&quot;&gt;模拟登陆拉钩&lt;/h4&gt;
+
+&lt;p&gt;从拉钩上获取登陆页面的&lt;a href=&quot;https://passport.lagou.com/login/login.html?ts=1531298207868&amp;amp;serviceId=lagou&amp;amp;service=https%253A%252F%252Fwww.lagou.com%252F&amp;amp;action=login&amp;amp;signature=31C3FF0842AEC92EA441C805FD0CA82B&quot;&gt;链接&lt;/a&gt;,然后使用Selenium+无头的firefox进行模拟登陆&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python &lt;/span&gt;
+
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;time&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webdriver&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium.webdriver.common.keys&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Keys&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium.webdriver.firefox.options&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Options&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium.webdriver.common.by&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;By&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium.webdriver.support.ui&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WebDriverWait&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;selenium.webdriver.support&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expected_conditions&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EC&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'https://passport.lagou.com/login/login.html?ts=1528767630158&amp;amp;serviceId=lagou&amp;amp;service=https&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%3&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;A&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%2&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%2&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;Fwww.lagou.com&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;%2&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;F&amp;amp;action=login&amp;amp;signature=074A3727AC575DBFF567FBE036F6216B'&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#创建无头火狐浏览器&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;optins&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;optins&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_argument&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-headless'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;webdriver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Firefox&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;firefox_options&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;optins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#获取登陆页面&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#根据页面标签获取输入框&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#等待页面加载，最长10s &lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;usertf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WebDriverWait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;until&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;#直到用户输入框加载完成&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;EC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;presence_of_element_located&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;By&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;XPATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'//div[@data-propertyname=&quot;username&quot;]/input'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;        
+
+&lt;span class=&quot;n&quot;&gt;passtf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WebDriverWait&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;until&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;EC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;presence_of_element_located&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;By&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;XPATH&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'//div[@data-propertyname=&quot;password&quot;]/input'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#获取登陆按钮&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;loginbt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find_element_by_xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//div[@data-propertyname=&quot;submit&quot;]/input'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#输入用户名&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;usertf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'xxxxxxxxx'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#休眠，防止被检测为机器人&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#输入密码&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;passtf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send_keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'xxxxxxx'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#点击登陆&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;loginbt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;click&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;c&quot;&gt;#假如账号密码有误&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;valid_msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find_element_by_xpath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'//span[@data-valid-message=&quot;&quot;]'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;valid_msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'innerHTML'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;在开发中时，可以禁用无头Firefox，这样方便调试:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;driver = webdriver.Firefox()&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p id=&quot;search&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;根据岗位确定需要爬取的总页数&quot;&gt;根据岗位确定需要爬取的总页数&lt;/h4&gt;
+
+&lt;p&gt;在拉钩网上进入iOS职位的页面，找到页面底部的页码进行分析:
+&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-01&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;显而易见，页数是根据服务器返回的数据确定的，所以这边pager_container的div是异步获取的，因此需要通过等待页面加载完毕才能读取页数:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;page_url = &quot;https://www.lagou.com/jobs/list_iOS?city=%E6%B7%B1%E5%9C%B3&amp;amp;cl=false&amp;amp;fromSearch=true&amp;amp;labelWords=&amp;amp;suginput=&quot;
+
+driver.get(page_url)
+
+element = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.CLASS_NAME, 'pager_is_current'))
+)
+
+elements = driver.find_elements_by_xpath(&quot;//span[@class='pager_not_current']&quot;)
+
+
+page_count = elements[-1].get_attribute('innerHTML')
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;等待页面元素div:class=pager_is_current被加载出来，然后找出所有的pager_not_current的span，其中最后一个就是总页数&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;driver.find_elements_by_xpath() //返回找到的所有对象
+driver.find_element_by_xpath()  //返回找到的第一个对象
+get_attribute('innerHTML')      //获取标签对里的内容
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p id=&quot;link&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;找出每一页岗位信息的链接&quot;&gt;找出每一页岗位信息的链接&lt;/h4&gt;
+&lt;p&gt;岗位信息同样是通过Ajax异步获取的数据，可以从图中显示的消息头中获取真实的请求网址和参数:
+&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-02&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;以下是基本参数&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;base_url = &quot;https://www.lagou.com/jobs/positionAjax.json?&quot;
+params = {
+        'city':'', #城市
+        'kd': '',  #岗位
+        'pn': '1', #页码
+    }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;通过网页上的操作，同样可以获取其他的筛选参数，这里就不一一阐述了。&lt;/p&gt;
+
+&lt;p id=&quot;ip&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;添加代理和针对性的header&quot;&gt;添加代理和针对性的header&lt;/h4&gt;
+&lt;p&gt;在Scrapy项目中，可以通过中间件(Middleware)添加代理ip和修改header,使用时需要在settings.py中激活中间件:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//在DOWNLOADER_MIDDLEWARES中添加
+lagou.middlewares.MyUserAgentMiddleware': 401
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在middlewares.py中添加自定义的中间件:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random
+
+//获取代理ip组
+proxy_list = get_ip()
+
+class MyUserAgentMiddleware(UserAgentMiddleware):
+    '''
+    设置User-Agent
+    '''
+    //为header更改referurl，提高爬取成功率
+    refers = ['ios', 'python', 'andriod', 'html5', 'java']
+
+    def __init__(self, user_agent):
+        self.user_agent = user_agent
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            //从setting.py中获取MY_USER_AGENT组
+            user_agent=crawler.settings.get('MY_USER_AGENT')
+        )
+
+    def process_request(self, request, spider): 
+        //添加代理ip       
+        request.meta['proxy'] = 'http://%s' % random.choice(proxy_list)
+
+        //添加user_agent
+        agent = random.choice(self.user_agent)
+
+        //针对拉钩，随机更改referer，伪装正常访问
+        r1 = random.choice(self.refers)
+        r2 = random.choice(self.refers)
+        refer = 'https://www.lagou.com/jobs/list_{}?oquery={}&amp;amp;fromSearch=true&amp;amp;labelWords=relative&amp;amp;city=%E6%B7%B1%E5%9C%B3'.format(r1, r2) 
+
+        request.headers['User-Agent'] = agent
+        request.headers['Referer'] = refer
+        print('User-Agent:' + agent)
+        print('Proxy:' + request.meta['proxy'].strip())
+        print('Referer:' + refer)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;对于修改headers中Referer的值，是比较重要的。随机更改其值后，显著提高爬取成功率。&lt;/p&gt;
+
+&lt;p id=&quot;start&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;开始爬虫&quot;&gt;开始爬虫&lt;/h4&gt;
+&lt;p&gt;首先需要了解Scrapy的爬虫运行流程，以本项目为例，当爬虫运行时，默认调用LgSpider中的start_requests()进行请求，然后这个方法里提交的所有请求都会经过中间件MyUserAgentMiddleware,在获取数据后，会返回在LgSpider中的parse()方法进行解析，转化模型。最后通过LagouPipeline进行数据处理。&lt;/p&gt;
+
+&lt;p&gt;定义模型items.py&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class LagouItem(scrapy.Item):
+    job_name = scrapy.Field()   #岗位名称
+    job_addr = scrapy.Field()   #上班地址
+    job_time = scrapy.Field()   #发布时间
+    job_limit = scrapy.Field()  #应聘资格
+    job_company = scrapy.Field()#公司
+    job_company_type = scrapy.Field()#公司类型
+    job_vip = scrapy.Field()    #公司福利
+    job_salary = scrapy.Field() #薪水
+    positionId = scrapy.Field() #详情id
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;爬虫lg.py:&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class LgSpider(scrapy.Spider):
+
+    name = 'lg'
+    allowed_domains = ['logou.com']
+    start_urls = ['http://logou.com/']
+
+    addrrKey = &quot;深圳&quot;
+    carrerKey = &quot;ios&quot;
+
+    //自动登录，获取driver进行操作
+    driver = aotulogin()
+
+    base_url = &quot;https://www.lagou.com/jobs/positionAjax.json?&quot;
+
+    //headers
+    headers = {
+        'Host': 'www.lagou.com',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:60.0) Gecko/20100101 Firefox/60.0',
+        'Referer': 'https://www.lagou.com/jobs/list_python?oquery=android&amp;amp;fromSearch=true&amp;amp;labelWords=relative&amp;amp;city=%E6%B7%B1%E5%9C%B3',
+        }
+
+    //参数
+    params = {
+        'city': addrrKey.encode('utf-8'),
+        'kd': carrerKey.encode('utf-8'),
+        'pn': '1',
+    }
+
+    def start_requests(self): 
+
+        for page in range(1, page_count+1):
+            yield scrapy.FormRequest(self.base_url, headers=self.headers, formdata=self.params, callback=self.parse, dont_filter=True)
+            self.params['pn'] = str(page+1)
+
+
+    def parse(self, response):
+        
+        //返回的json格式的数据，包含岗位信息
+        text = json.loads(response.text)
+
+        try:
+            content = text['content']
+        except Exception as e:
+            print(text)
+        finally:
+                //解析数据，提取需要的数据
+                results = content['positionResult']['result']
+                for result in results: 
+                    job = LagouItem()
+                    job['job_name'] = result['positionName']
+                    job['job_addr'] = result['district']
+                    job['job_time'] = result['createTime']
+                    job['job_limit'] = result['education'] + '、' + result['workYear']
+                    job['job_salary'] = result['salary']
+                    job['job_company'] = result['companyFullName']
+                    job['job_company_type'] = result['financeStage'] + '、' + result['industryField']
+                    job['job_vip']  = result['positionAdvantage']
+                    job['positionId'] = result['positionId']
+                    yield job
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p id=&quot;data&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;对数据进行处理&quot;&gt;对数据进行处理&lt;/h4&gt;
+
+&lt;p&gt;使用Panas进行数据处理
+pipelines.py&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class LagouPipeline(object):
+
+    def __init__(self):
+        self.name = []
+        self.addr = []
+        self.time = []
+        self.limit = []
+        self.company = []
+        self.type = []
+        self.vip = []
+        self.salary = []
+        self.page = []
+        self.positionId = []
+
+    def process_item(self, item, spider):
+        
+        self.name.append(item['job_name'])
+        self.addr.append(item['job_addr'])
+        self.time.append(item['job_time'])
+        self.limit.append(item['job_limit'])
+        self.company.append(item['job_company'])
+        self.type.append(item['job_company_type'])
+        self.vip.append(item['job_vip'])   
+        self.salary.append(item['job_salary'])
+        self.page.append(item['page'])
+        self.positionId.append(item['positionId'])
+    
+    def close_spider(self, spider):
+        data = pd.DataFrame({
+          'name':self.name,
+          'salary':self.salary,
+          'addr':self.addr,
+          'time':self.time,
+          'limit':self.limit,
+          'company':self.company,
+          'type':self.type,
+          'vip':self.vip,
+          'page': self.page,
+         })
+        //以cvs的格式导出结果 
+        data.to_csv('./result.csv')
+        
+        //投递简历
+        atlogin.send_resume(spider.driver, self.positionId)
+        spider.driver.quit()
+        
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p id=&quot;filter&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;对符合条件的岗位进行投递简历&quot;&gt;对符合条件的岗位进行投递简历&lt;/h4&gt;
+
+&lt;p&gt;使用自动登陆后获得的driver进行投递简历&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;//递归投递，成功就移除岗位详情页的id
+def send_resume(driver, arr):
+    
+    if len(arr) == 0:
+        return
+    
+    //岗位详情页
+    url_detail = 'https://www.lagou.com/jobs/'+str(arr[0])+'.html'
+    driver.get(url_detail)
+    
+    //投递简历按钮
+    resume_btn = driver.find_element_by_xpath('//div[@class=&quot;resume-deliver&quot;]/a')
+
+    //通过按钮的文本判断是否已投递
+    text = resume_btn.get_attribute('innerHTML')
+    if '已' in text:
+        
+        //丢弃已投递的id
+        arr.remove(arr[0])
+
+        //进行下一个岗位投递
+        send_resume(driver, arr)
+
+        //投递结束，关闭driver
+        driver.quit()
+        
+    else:
+
+        //点击投递按钮
+        resume_btn.click()
+ 
+        time.sleep(1)
+
+        //尝试获取弹窗
+        try:
+            cbox_loaded = driver.find_element_by_xpath('//*[@id=&quot;cboxLoadedContent&quot;]')
+        except Exception as e:
+            print('获取弹窗失败: ', e)
+            #没有弹窗返回
+            return
+
+        //弹窗出现后，需要切换当前window
+        now = driver.current_window_handle
+        driver.switch_to_window(now)
+
+        try:
+            //弹出不匹配岗位窗口
+            btn = driver.find_element_by_xpath('//div[@id=&quot;cboxContent&quot;]//table//td/a[@class=&quot;btn&quot;]')
+            btn.click()
+            print('发现不匹配窗口, 点击确认投递')
+        except Exception as e:
+            //超时／获取不到异常不处理，继续往下走
+            pass
+
+        time.sleep(0.2)
+
+        try:
+            //弹出达到投递上限
+            cancel_btn = driver.find_element_by_xpath('//div[@id=&quot;cboxContent&quot;]//table//td/a[@class=&quot;upper_close&quot;]')
+            cancel_btn.click()
+            print('发现达到投递上限窗口, 点击取消并退出')
+            return
+        except Exception as e:
+            pass
+                
+        //递归请求，只有成功投递才能出来   
+        send_resume(driver, arr)
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;在拉钩网上自动投递简历时，需注意:&lt;/p&gt;
+
+&lt;p&gt;1、该岗位已投递, 可以根据投递按钮的文本来判断是否投递。&lt;/p&gt;
+
+&lt;p&gt;2、点击投递按钮后，页面会弹出弹窗，拉钩的弹窗是动态加载的，所以可以尝试获取弹窗是否在页面上显示来进行下一步。&lt;/p&gt;
+
+&lt;p&gt;3、假如没有获取到弹窗，就代表成功，不进行下一步操作。&lt;/p&gt;
+
+&lt;p&gt;4、获取到弹窗后，根据class来判断弹窗是不匹配还是已达投递上限。&lt;/p&gt;
+
+&lt;p&gt;5、假如是不匹配，就直接获取按钮，点击确认投递按钮进行投递。&lt;/p&gt;
+
+&lt;p&gt;6、假如是已达投递上限，获取取消按钮并点击，退出。&lt;/p&gt;
+
+&lt;p id=&quot;timer&quot;&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;定时开启任务&quot;&gt;定时开启任务&lt;/h4&gt;
+
+&lt;p&gt;1、编写shell脚本&lt;/p&gt;
+
+&lt;p&gt;start.sh&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#本项目的绝对路径, 打开终端执行&lt;/span&gt;
+open &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; Terminal.app /Users/xxx/Lagou/crawl.sh
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;crawl.sh&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /Users/xxx/Lagou/lagou
+
+&lt;span class=&quot;c&quot;&gt;#使用python3执行爬虫任务&lt;/span&gt;
+python3 &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; scrapy crawl lg
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;update.sh&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+
+open &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; Terminal.app /Users/xxx/Lagou/ip.sh
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ip.sh&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /Users/xxx/Lagou/lagou
+python3 pool.py
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;2、使用crontab定时执行任务&lt;/p&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;crontab -e 
+
+//进入编辑模式
+i
+
+//每天17:30点执行
+30 17 * * * /xx/Lagou/crontab/start.sh
+30 12 * * * /xx/Lagou/crontab/update.sh 
+
+//退出编辑模式
+Esc
+
+//进入退出模式
+Shitf :
+
+//保存退出
+wq Enter
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+</description>
+        <pubDate>Mon, 02 Jul 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2018/07/02/Python-VS-%E6%8B%89%E5%8B%BE/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2018/07/02/Python-VS-%E6%8B%89%E5%8B%BE/</guid>
+        
+        <category>Python</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Safiri下载内测包</title>
+        <description>
+</description>
+        <pubDate>Fri, 22 Jun 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2018/06/22/Safiri%E4%B8%8B%E8%BD%BD%E5%86%85%E6%B5%8B%E5%8C%85/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2018/06/22/Safiri%E4%B8%8B%E8%BD%BD%E5%86%85%E6%B5%8B%E5%8C%85/</guid>
+        
+        <category>iOS</category>
+        
+        
+      </item>
     
       <item>
         <title>Swift面包</title>

@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜">
+    <meta name="keyword"  content="涂育旺,tuyuwang,Tun,图欲旺,iOS,swift,Unity3D,涂,博客">
+    <link rel="shortcut icon" href="/tuyuwang.github.io/img/favicon.ico">
+
+    <title>Python VS 拉钩 - 涂育旺的博客 | Tun Blog</title>
+
+    <link rel="canonical" href="http://localhost:4000/tuyuwang.github.io/2018/07/02/Python-VS-%E6%8B%89%E5%8B%BE/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/tuyuwang.github.io/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/tuyuwang.github.io/css/hux-blog.min.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/tuyuwang.github.io/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?d6c68d65b1e23c0f469fb8c8ded8a9df";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/tuyuwang.github.io/">Tun Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/tuyuwang.github.io/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tuyuwang.github.io/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tuyuwang.github.io/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/tuyuwang.github.io/img/swift-openSource.png" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/tuyuwang.github.io/img/swift-openSource.png')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tuyuwang.github.io/tags/#Python" title="Python">Python</a>
+                        
+                    </div>
+                    <h1>Python VS 拉钩</h1>
+                    
+                    
+                    <h2 class="subheading">使用Python实现自动抓取岗位信息，并投递简历</h2>
+                    
+                    <span class="meta">Posted by Tun on July 2, 2018</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h4 id="前言">前言</h4>
+
+<p>俗话说实践出真知，理论学习不如动手实践的印象深，于是直接进入Python实战阶段，通过爬取拉钩的岗位信息，并做筛选，针对符合条件的岗位进行自动化投递简历这个项目来检验最近所学。</p>
+
+<p>首先分析一下怎么实现:</p>
+
+<ul>
+  <li>
+    <p><a href="#login">模拟登陆拉钩网</a></p>
+  </li>
+  <li>
+    <p><a href="#search">根据岗位确定需要爬取的总页数</a></p>
+  </li>
+  <li>
+    <p><a href="#link">找出每一页岗位信息的链接</a></p>
+  </li>
+  <li>
+    <p><a href="#ip">添加代理和针对性的header</a></p>
+  </li>
+  <li>
+    <p><a href="#start">开始爬虫</a></p>
+  </li>
+  <li>
+    <p><a href="#data">对数据进行处理</a></p>
+  </li>
+  <li>
+    <p><a href="#filter">对符合条件的岗位进行投递简历</a></p>
+  </li>
+  <li>
+    <p><a href="#timer">定时开启任务</a></p>
+  </li>
+</ul>
+
+<p>使用的工具:</p>
+
+<ul>
+  <li>
+    <p>Scrapy</p>
+  </li>
+  <li>
+    <p>Selenium</p>
+  </li>
+  <li>
+    <p>Firefox</p>
+  </li>
+  <li>
+    <p>Pandas</p>
+  </li>
+</ul>
+
+<p>这里使用<a href="http://scrapy-chs.readthedocs.io/zh_CN/0.24/intro/overview.html">Scrapy</a>为爬虫的主体框架，用<a href="https://www.cnblogs.com/BigFishFly/p/6380024.html">Selenium</a>来进行模拟登陆请求和使用<a href="http://pandas.pydata.org/pandas-docs/stable/">Pandas</a>进行数据处理</p>
+
+<p>先讲解一下Scrapy的基本知识 -&gt; <a href="#jump">略过</a></p>
+
+<p>Scrapy(1.5.0)常用命令:</p>
+
+<p>1、初始化爬虫项目:</p>
+<blockquote>
+  <p>scrapy startproject projectName [project_dir]</p>
+</blockquote>
+
+<p>2、创建爬虫:</p>
+<blockquote>
+  <p>scrapy genspider spiderName domain.com</p>
+</blockquote>
+
+<p>3、运行爬虫:</p>
+<blockquote>
+  <p>scrapy crawl spiderName</p>
+</blockquote>
+
+<p>ok,使用以上命令创建拉钩项目</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//在本目录下创建项目
+scrapy startproject lagou
+scrapy genspider lg lagou.com
+</code></pre></div></div>
+
+<p>执行完毕后，呈现以下目录结构</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── scrapy.cfg
+├── lagou                   //项目文件夹
+├── |
+├── ├── __init__.py 
+├── └── __pycache__
+├── ├── items.py            //数据模型，保存爬取到的数据的容器
+├── └── middlewares.py      //中间件，用于截取请求，增加自定义操作
+├──    ├── pipelines.py     //管道，处理爬取的数据
+├──    └── settings.py      //配置文件，用于配置全局
+├──    └── spiders          //爬虫文件夹
+├──         ├── __init__.py 
+├──         └── __pycache__
+├──         └── lg.py       //lg爬虫，爬虫操作入口
+      
+</code></pre></div></div>
+
+<hr />
+
+<p id="jump"></p>
+<p id="login"></p>
+
+<h4 id="模拟登陆拉钩">模拟登陆拉钩</h4>
+
+<p>从拉钩上获取登陆页面的<a href="https://passport.lagou.com/login/login.html?ts=1531298207868&amp;serviceId=lagou&amp;service=https%253A%252F%252Fwww.lagou.com%252F&amp;action=login&amp;signature=31C3FF0842AEC92EA441C805FD0CA82B">链接</a>,然后使用Selenium+无头的firefox进行模拟登陆</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/python </span>
+
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">selenium</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.keys</span> <span class="kn">import</span> <span class="n">Keys</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.options</span> <span class="kn">import</span> <span class="n">Options</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.common.by</span> <span class="kn">import</span> <span class="n">By</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support.ui</span> <span class="kn">import</span> <span class="n">WebDriverWait</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.support</span> <span class="kn">import</span> <span class="n">expected_conditions</span> <span class="k">as</span> <span class="n">EC</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s">'https://passport.lagou.com/login/login.html?ts=1528767630158&amp;serviceId=lagou&amp;service=https</span><span class="si">%3</span><span class="s">A</span><span class="si">%2</span><span class="s">F</span><span class="si">%2</span><span class="s">Fwww.lagou.com</span><span class="si">%2</span><span class="s">F&amp;action=login&amp;signature=074A3727AC575DBFF567FBE036F6216B'</span>
+
+<span class="c">#创建无头火狐浏览器</span>
+<span class="n">optins</span> <span class="o">=</span> <span class="n">Options</span><span class="p">()</span>
+<span class="n">optins</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">'-headless'</span><span class="p">)</span>
+<span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">firefox_options</span><span class="o">=</span><span class="n">optins</span><span class="p">)</span>
+
+<span class="c">#获取登陆页面</span>
+<span class="n">driver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="c">#根据页面标签获取输入框</span>
+<span class="c">#等待页面加载，最长10s </span>
+<span class="n">usertf</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span>
+    <span class="c">#直到用户输入框加载完成</span>
+    <span class="n">EC</span><span class="o">.</span><span class="n">presence_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s">'//div[@data-propertyname="username"]/input'</span><span class="p">))</span>
+<span class="p">)</span>        
+
+<span class="n">passtf</span> <span class="o">=</span> <span class="n">WebDriverWait</span><span class="p">(</span><span class="n">driver</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">until</span><span class="p">(</span>
+    <span class="n">EC</span><span class="o">.</span><span class="n">presence_of_element_located</span><span class="p">((</span><span class="n">By</span><span class="o">.</span><span class="n">XPATH</span><span class="p">,</span> <span class="s">'//div[@data-propertyname="password"]/input'</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="c">#获取登陆按钮</span>
+<span class="n">loginbt</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">'//div[@data-propertyname="submit"]/input'</span><span class="p">)</span>
+
+<span class="c">#输入用户名</span>
+<span class="n">usertf</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">'xxxxxxxxx'</span><span class="p">)</span>
+
+<span class="c">#休眠，防止被检测为机器人</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c">#输入密码</span>
+<span class="n">passtf</span><span class="o">.</span><span class="n">send_keys</span><span class="p">(</span><span class="s">'xxxxxxx'</span><span class="p">)</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="c">#点击登陆</span>
+<span class="n">loginbt</span><span class="o">.</span><span class="n">click</span><span class="p">()</span>
+
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span> 
+    <span class="c">#假如账号密码有误</span>
+    <span class="n">valid_msg</span> <span class="o">=</span> <span class="n">driver</span><span class="o">.</span><span class="n">find_element_by_xpath</span><span class="p">(</span><span class="s">'//span[@data-valid-message=""]'</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">valid_msg</span><span class="o">.</span><span class="n">get_attribute</span><span class="p">(</span><span class="s">'innerHTML'</span><span class="p">)</span>
+<span class="k">except</span> <span class="nb">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+</code></pre></div></div>
+<p>在开发中时，可以禁用无头Firefox，这样方便调试:</p>
+<blockquote>
+  <p>driver = webdriver.Firefox()</p>
+</blockquote>
+
+<p id="search"></p>
+
+<h4 id="根据岗位确定需要爬取的总页数">根据岗位确定需要爬取的总页数</h4>
+
+<p>在拉钩网上进入iOS职位的页面，找到页面底部的页码进行分析:
+<img src="https://tuyuwang.github.io/img/python/lagou-01" alt="image" /></p>
+
+<p>显而易见，页数是根据服务器返回的数据确定的，所以这边pager_container的div是异步获取的，因此需要通过等待页面加载完毕才能读取页数:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>page_url = "https://www.lagou.com/jobs/list_iOS?city=%E6%B7%B1%E5%9C%B3&amp;cl=false&amp;fromSearch=true&amp;labelWords=&amp;suginput="
+
+driver.get(page_url)
+
+element = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.CLASS_NAME, 'pager_is_current'))
+)
+
+elements = driver.find_elements_by_xpath("//span[@class='pager_not_current']")
+
+
+page_count = elements[-1].get_attribute('innerHTML')
+
+</code></pre></div></div>
+
+<p>等待页面元素div:class=pager_is_current被加载出来，然后找出所有的pager_not_current的span，其中最后一个就是总页数</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>driver.find_elements_by_xpath() //返回找到的所有对象
+driver.find_element_by_xpath()  //返回找到的第一个对象
+get_attribute('innerHTML')      //获取标签对里的内容
+</code></pre></div></div>
+<p id="link"></p>
+
+<h4 id="找出每一页岗位信息的链接">找出每一页岗位信息的链接</h4>
+<p>岗位信息同样是通过Ajax异步获取的数据，可以从图中显示的消息头中获取真实的请求网址和参数:
+<img src="https://tuyuwang.github.io/img/python/lagou-02" alt="image" /></p>
+
+<p>以下是基本参数</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>base_url = "https://www.lagou.com/jobs/positionAjax.json?"
+params = {
+        'city':'', #城市
+        'kd': '',  #岗位
+        'pn': '1', #页码
+    }
+</code></pre></div></div>
+<p>通过网页上的操作，同样可以获取其他的筛选参数，这里就不一一阐述了。</p>
+
+<p id="ip"></p>
+
+<h4 id="添加代理和针对性的header">添加代理和针对性的header</h4>
+<p>在Scrapy项目中，可以通过中间件(Middleware)添加代理ip和修改header,使用时需要在settings.py中激活中间件:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//在DOWNLOADER_MIDDLEWARES中添加
+lagou.middlewares.MyUserAgentMiddleware': 401
+</code></pre></div></div>
+
+<p>在middlewares.py中添加自定义的中间件:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>from scrapy.downloadermiddlewares.useragent import UserAgentMiddleware
+import random
+
+//获取代理ip组
+proxy_list = get_ip()
+
+class MyUserAgentMiddleware(UserAgentMiddleware):
+    '''
+    设置User-Agent
+    '''
+    //为header更改referurl，提高爬取成功率
+    refers = ['ios', 'python', 'andriod', 'html5', 'java']
+
+    def __init__(self, user_agent):
+        self.user_agent = user_agent
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            //从setting.py中获取MY_USER_AGENT组
+            user_agent=crawler.settings.get('MY_USER_AGENT')
+        )
+
+    def process_request(self, request, spider): 
+        //添加代理ip       
+        request.meta['proxy'] = 'http://%s' % random.choice(proxy_list)
+
+        //添加user_agent
+        agent = random.choice(self.user_agent)
+
+        //针对拉钩，随机更改referer，伪装正常访问
+        r1 = random.choice(self.refers)
+        r2 = random.choice(self.refers)
+        refer = 'https://www.lagou.com/jobs/list_{}?oquery={}&amp;fromSearch=true&amp;labelWords=relative&amp;city=%E6%B7%B1%E5%9C%B3'.format(r1, r2) 
+
+        request.headers['User-Agent'] = agent
+        request.headers['Referer'] = refer
+        print('User-Agent:' + agent)
+        print('Proxy:' + request.meta['proxy'].strip())
+        print('Referer:' + refer)
+</code></pre></div></div>
+
+<p>对于修改headers中Referer的值，是比较重要的。随机更改其值后，显著提高爬取成功率。</p>
+
+<p id="start"></p>
+
+<h4 id="开始爬虫">开始爬虫</h4>
+<p>首先需要了解Scrapy的爬虫运行流程，以本项目为例，当爬虫运行时，默认调用LgSpider中的start_requests()进行请求，然后这个方法里提交的所有请求都会经过中间件MyUserAgentMiddleware,在获取数据后，会返回在LgSpider中的parse()方法进行解析，转化模型。最后通过LagouPipeline进行数据处理。</p>
+
+<p>定义模型items.py</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class LagouItem(scrapy.Item):
+    job_name = scrapy.Field()   #岗位名称
+    job_addr = scrapy.Field()   #上班地址
+    job_time = scrapy.Field()   #发布时间
+    job_limit = scrapy.Field()  #应聘资格
+    job_company = scrapy.Field()#公司
+    job_company_type = scrapy.Field()#公司类型
+    job_vip = scrapy.Field()    #公司福利
+    job_salary = scrapy.Field() #薪水
+    positionId = scrapy.Field() #详情id
+</code></pre></div></div>
+
+<p>爬虫lg.py:</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class LgSpider(scrapy.Spider):
+
+    name = 'lg'
+    allowed_domains = ['logou.com']
+    start_urls = ['http://logou.com/']
+
+    addrrKey = "深圳"
+    carrerKey = "ios"
+
+    //自动登录，获取driver进行操作
+    driver = aotulogin()
+
+    base_url = "https://www.lagou.com/jobs/positionAjax.json?"
+
+    //headers
+    headers = {
+        'Host': 'www.lagou.com',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:60.0) Gecko/20100101 Firefox/60.0',
+        'Referer': 'https://www.lagou.com/jobs/list_python?oquery=android&amp;fromSearch=true&amp;labelWords=relative&amp;city=%E6%B7%B1%E5%9C%B3',
+        }
+
+    //参数
+    params = {
+        'city': addrrKey.encode('utf-8'),
+        'kd': carrerKey.encode('utf-8'),
+        'pn': '1',
+    }
+
+    def start_requests(self): 
+
+        for page in range(1, page_count+1):
+            yield scrapy.FormRequest(self.base_url, headers=self.headers, formdata=self.params, callback=self.parse, dont_filter=True)
+            self.params['pn'] = str(page+1)
+
+
+    def parse(self, response):
+        
+        //返回的json格式的数据，包含岗位信息
+        text = json.loads(response.text)
+
+        try:
+            content = text['content']
+        except Exception as e:
+            print(text)
+        finally:
+                //解析数据，提取需要的数据
+                results = content['positionResult']['result']
+                for result in results: 
+                    job = LagouItem()
+                    job['job_name'] = result['positionName']
+                    job['job_addr'] = result['district']
+                    job['job_time'] = result['createTime']
+                    job['job_limit'] = result['education'] + '、' + result['workYear']
+                    job['job_salary'] = result['salary']
+                    job['job_company'] = result['companyFullName']
+                    job['job_company_type'] = result['financeStage'] + '、' + result['industryField']
+                    job['job_vip']  = result['positionAdvantage']
+                    job['positionId'] = result['positionId']
+                    yield job
+</code></pre></div></div>
+
+<p id="data"></p>
+
+<h4 id="对数据进行处理">对数据进行处理</h4>
+
+<p>使用Panas进行数据处理
+pipelines.py</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class LagouPipeline(object):
+
+    def __init__(self):
+        self.name = []
+        self.addr = []
+        self.time = []
+        self.limit = []
+        self.company = []
+        self.type = []
+        self.vip = []
+        self.salary = []
+        self.page = []
+        self.positionId = []
+
+    def process_item(self, item, spider):
+        
+        self.name.append(item['job_name'])
+        self.addr.append(item['job_addr'])
+        self.time.append(item['job_time'])
+        self.limit.append(item['job_limit'])
+        self.company.append(item['job_company'])
+        self.type.append(item['job_company_type'])
+        self.vip.append(item['job_vip'])   
+        self.salary.append(item['job_salary'])
+        self.page.append(item['page'])
+        self.positionId.append(item['positionId'])
+    
+    def close_spider(self, spider):
+        data = pd.DataFrame({
+          'name':self.name,
+          'salary':self.salary,
+          'addr':self.addr,
+          'time':self.time,
+          'limit':self.limit,
+          'company':self.company,
+          'type':self.type,
+          'vip':self.vip,
+          'page': self.page,
+         })
+        //以cvs的格式导出结果 
+        data.to_csv('./result.csv')
+        
+        //投递简历
+        atlogin.send_resume(spider.driver, self.positionId)
+        spider.driver.quit()
+        
+</code></pre></div></div>
+
+<p id="filter"></p>
+
+<h4 id="对符合条件的岗位进行投递简历">对符合条件的岗位进行投递简历</h4>
+
+<p>使用自动登陆后获得的driver进行投递简历</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//递归投递，成功就移除岗位详情页的id
+def send_resume(driver, arr):
+    
+    if len(arr) == 0:
+        return
+    
+    //岗位详情页
+    url_detail = 'https://www.lagou.com/jobs/'+str(arr[0])+'.html'
+    driver.get(url_detail)
+    
+    //投递简历按钮
+    resume_btn = driver.find_element_by_xpath('//div[@class="resume-deliver"]/a')
+
+    //通过按钮的文本判断是否已投递
+    text = resume_btn.get_attribute('innerHTML')
+    if '已' in text:
+        
+        //丢弃已投递的id
+        arr.remove(arr[0])
+
+        //进行下一个岗位投递
+        send_resume(driver, arr)
+
+        //投递结束，关闭driver
+        driver.quit()
+        
+    else:
+
+        //点击投递按钮
+        resume_btn.click()
+ 
+        time.sleep(1)
+
+        //尝试获取弹窗
+        try:
+            cbox_loaded = driver.find_element_by_xpath('//*[@id="cboxLoadedContent"]')
+        except Exception as e:
+            print('获取弹窗失败: ', e)
+            #没有弹窗返回
+            return
+
+        //弹窗出现后，需要切换当前window
+        now = driver.current_window_handle
+        driver.switch_to_window(now)
+
+        try:
+            //弹出不匹配岗位窗口
+            btn = driver.find_element_by_xpath('//div[@id="cboxContent"]//table//td/a[@class="btn"]')
+            btn.click()
+            print('发现不匹配窗口, 点击确认投递')
+        except Exception as e:
+            //超时／获取不到异常不处理，继续往下走
+            pass
+
+        time.sleep(0.2)
+
+        try:
+            //弹出达到投递上限
+            cancel_btn = driver.find_element_by_xpath('//div[@id="cboxContent"]//table//td/a[@class="upper_close"]')
+            cancel_btn.click()
+            print('发现达到投递上限窗口, 点击取消并退出')
+            return
+        except Exception as e:
+            pass
+                
+        //递归请求，只有成功投递才能出来   
+        send_resume(driver, arr)
+
+</code></pre></div></div>
+
+<p>在拉钩网上自动投递简历时，需注意:</p>
+
+<p>1、该岗位已投递, 可以根据投递按钮的文本来判断是否投递。</p>
+
+<p>2、点击投递按钮后，页面会弹出弹窗，拉钩的弹窗是动态加载的，所以可以尝试获取弹窗是否在页面上显示来进行下一步。</p>
+
+<p>3、假如没有获取到弹窗，就代表成功，不进行下一步操作。</p>
+
+<p>4、获取到弹窗后，根据class来判断弹窗是不匹配还是已达投递上限。</p>
+
+<p>5、假如是不匹配，就直接获取按钮，点击确认投递按钮进行投递。</p>
+
+<p>6、假如是已达投递上限，获取取消按钮并点击，退出。</p>
+
+<p id="timer"></p>
+
+<h4 id="定时开启任务">定时开启任务</h4>
+
+<p>1、编写shell脚本</p>
+
+<p>start.sh</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="c">#本项目的绝对路径, 打开终端执行</span>
+open <span class="nt">-a</span> Terminal.app /Users/xxx/Lagou/crawl.sh
+
+</code></pre></div></div>
+<p>crawl.sh</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="nb">cd</span> /Users/xxx/Lagou/lagou
+
+<span class="c">#使用python3执行爬虫任务</span>
+python3 <span class="nt">-m</span> scrapy crawl lg
+</code></pre></div></div>
+
+<p>update.sh</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+open <span class="nt">-a</span> Terminal.app /Users/xxx/Lagou/ip.sh
+</code></pre></div></div>
+
+<p>ip.sh</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+
+<span class="nb">cd</span> /Users/xxx/Lagou/lagou
+python3 pool.py
+</code></pre></div></div>
+
+<p>2、使用crontab定时执行任务</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>crontab -e 
+
+//进入编辑模式
+i
+
+//每天17:30点执行
+30 17 * * * /xx/Lagou/crontab/start.sh
+30 12 * * * /xx/Lagou/crontab/update.sh 
+
+//退出编辑模式
+Esc
+
+//进入退出模式
+Shitf :
+
+//保存退出
+wq Enter
+
+</code></pre></div></div>
+
+
+                <hr>
+
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/tuyuwang.github.io/2018/06/22/Safiri%E4%B8%8B%E8%BD%BD%E5%86%85%E6%B5%8B%E5%8C%85/" data-toggle="tooltip" data-placement="top" title="Safiri下载内测包">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tuyuwang.github.io/tags/#生活" title="生活" rel="1">
+                                    生活
+                                </a>
+                            
+        				
+                            
+                				<a href="/tuyuwang.github.io/tags/#iOS" title="iOS" rel="5">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+                				<a href="/tuyuwang.github.io/tags/#Swift" title="Swift" rel="2">
+                                    Swift
+                                </a>
+                            
+        				
+                            
+                				<a href="/tuyuwang.github.io/tags/#Python" title="Python" rel="1">
+                                    Python
+                                </a>
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+
+
+<!-- intensedebare 评论-->
+
+      
+    <script>
+	var idcomments_acct = '014954845442297f3a557369285c4376';
+	var idcomments_post_id = '/2018/07/02/Python-VS-%E6%8B%89%E5%8B%BE/';
+	var idcomments_post_url;
+	</script>
+<span id="IDCommentsPostTitle" style="display:none"></span>
+<script type='text/javascript' src='https://www.intensedebate.com/js/genericCommentWrapperV2.js'></script>
+
+
+<!-- intensedebare 评论-->
+
+
+    
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/TuYuWang">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Tun Blog 2018
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/tuyuwang.github.io/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/tuyuwang.github.io/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/tuyuwang.github.io/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- 
+     Because of the native support for backtick-style fenced code blocks 
+     right within the Markdown is landed in Github Pages, 
+     From V1.6, There is no need for Highlight.js, 
+     so Huxblog drops it officially.
+
+     - https://github.com/blog/2100-github-pages-now-faster-and-simpler-with-jekyll-3-0  
+     - https://help.github.com/articles/creating-and-highlighting-code-blocks/    
+-->
+<!--
+    <script>
+        async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+            hljs.initHighlightingOnLoad();
+        })
+    </script>
+    <link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+-->
+
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
