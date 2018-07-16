@@ -166,7 +166,7 @@ except Exception as e:
 #### 根据岗位确定需要爬取的总页数
 
 在拉钩网上进入iOS职位的页面，找到页面底部的页码进行分析:
-![image](https://tuyuwang.github.io/img/python/lagou-01)
+![image](https://github.com/TuYuWang/tuyuwang.github.io/blob/master/img/python/lagou-01.png)
 
 显而易见，页数是根据服务器返回的数据确定的，所以这边pager_container的div是异步获取的，因此需要通过等待页面加载完毕才能读取页数:
 ~~~
@@ -196,7 +196,7 @@ get_attribute('innerHTML')      //获取标签对里的内容
 
 #### 找出每一页岗位信息的链接
 岗位信息同样是通过Ajax异步获取的数据，可以从图中显示的消息头中获取真实的请求网址和参数:
-![image](https://tuyuwang.github.io/img/python/lagou-02)
+![image](https://github.com/TuYuWang/tuyuwang.github.io/blob/master/img/python/lagou-02.png)
 
 以下是基本参数
 ~~~
