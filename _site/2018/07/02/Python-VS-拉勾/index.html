@@ -351,7 +351,7 @@ scrapy genspider lg lagou.com
 <h4 id="根据岗位确定需要爬取的总页数">根据岗位确定需要爬取的总页数</h4>
 
 <p>在拉钩网上进入iOS职位的页面，找到页面底部的页码进行分析:
-<img src="https://tuyuwang.github.io/img/python/lagou-01" alt="image" /></p>
+<img src="https://tuyuwang.github.io/img/python/lagou-01.png" alt="image" /></p>
 
 <p>显而易见，页数是根据服务器返回的数据确定的，所以这边pager_container的div是异步获取的，因此需要通过等待页面加载完毕才能读取页数:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>page_url = "https://www.lagou.com/jobs/list_iOS?city=%E6%B7%B1%E5%9C%B3&amp;cl=false&amp;fromSearch=true&amp;labelWords=&amp;suginput="
@@ -379,7 +379,7 @@ get_attribute('innerHTML')      //获取标签对里的内容
 
 <h4 id="找出每一页岗位信息的链接">找出每一页岗位信息的链接</h4>
 <p>岗位信息同样是通过Ajax异步获取的数据，可以从图中显示的消息头中获取真实的请求网址和参数:
-<img src="https://tuyuwang.github.io/img/python/lagou-02" alt="image" /></p>
+<img src="https://tuyuwang.github.io/img/python/lagou-02.png" alt="image" /></p>
 
 <p>以下是基本参数</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>base_url = "https://www.lagou.com/jobs/positionAjax.json?"
@@ -739,6 +739,10 @@ wq Enter
                     </li>
                     
                     
+                    <li class="next">
+                        <a href="/tuyuwang.github.io/2018/08/03/iOS%E9%9D%A2%E8%AF%95/" data-toggle="tooltip" data-placement="top" title="iOS面试">Next Post &rarr;</a>
+                    </li>
+                    
                 </ul>
 
 
@@ -768,7 +772,7 @@ wq Enter
                             
         				
                             
-                				<a href="/tuyuwang.github.io/tags/#iOS" title="iOS" rel="5">
+                				<a href="/tuyuwang.github.io/tags/#iOS" title="iOS" rel="6">
                                     iOS
                                 </a>
                             
@@ -802,16 +806,6 @@ wq Enter
 
 
 <!-- intensedebare 评论-->
-
-      
-    <script>
-	var idcomments_acct = '014954845442297f3a557369285c4376';
-	var idcomments_post_id = '/2018/07/02/Python-VS-%E6%8B%89%E5%8B%BE/';
-	var idcomments_post_url;
-	</script>
-<span id="IDCommentsPostTitle" style="display:none"></span>
-<script type='text/javascript' src='https://www.intensedebate.com/js/genericCommentWrapperV2.js'></script>
-
 
 <!-- intensedebare 评论-->
 

@@ -55,7 +55,7 @@ kramdown:
 
 #github OAuth Application settings
 #github_ApplicationName: Tun
-intensedebate_comments: true
+# intensedebate_comments: true
 
 # Analytics settings
 # Baidu Analytics

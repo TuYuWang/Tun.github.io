@@ -5,9 +5,36 @@
     <description>山本无忧，因雪白头；水本无愁，因风起皱；我本无忧，应该欢喜</description>
     <link>http://localhost:4000/tuyuwang.github.io/</link>
     <atom:link href="http://localhost:4000/tuyuwang.github.io/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Fri, 13 Jul 2018 17:34:13 +0800</pubDate>
-    <lastBuildDate>Fri, 13 Jul 2018 17:34:13 +0800</lastBuildDate>
-    <generator>Jekyll v3.6.2</generator>
+    <pubDate>Wed, 15 Aug 2018 18:01:14 +0800</pubDate>
+    <lastBuildDate>Wed, 15 Aug 2018 18:01:14 +0800</lastBuildDate>
+    <generator>Jekyll v3.8.3</generator>
+    
+      <item>
+        <title>iOS面试</title>
+        <description>&lt;h5 id=&quot;基础&quot;&gt;基础&lt;/h5&gt;
+
+&lt;p&gt;1、OC&lt;/p&gt;
+
+&lt;p&gt;2、&lt;/p&gt;
+
+&lt;h5 id=&quot;进阶&quot;&gt;进阶&lt;/h5&gt;
+
+&lt;h5 id=&quot;探索&quot;&gt;探索&lt;/h5&gt;
+
+&lt;h5 id=&quot;其他&quot;&gt;其他&lt;/h5&gt;
+
+&lt;p&gt;1、如何判断上传和下载文件操作成功&lt;/p&gt;
+
+&lt;p&gt;用MD5验证数据完整性&lt;/p&gt;
+</description>
+        <pubDate>Fri, 03 Aug 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/tuyuwang.github.io/2018/08/03/iOS%E9%9D%A2%E8%AF%95/</link>
+        <guid isPermaLink="true">http://localhost:4000/tuyuwang.github.io/2018/08/03/iOS%E9%9D%A2%E8%AF%95/</guid>
+        
+        <category>iOS</category>
+        
+        
+      </item>
     
       <item>
         <title>Python VS 拉钩</title>
@@ -186,7 +213,7 @@ scrapy genspider lg lagou.com
 &lt;h4 id=&quot;根据岗位确定需要爬取的总页数&quot;&gt;根据岗位确定需要爬取的总页数&lt;/h4&gt;
 
 &lt;p&gt;在拉钩网上进入iOS职位的页面，找到页面底部的页码进行分析:
-&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-01&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-01.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;显而易见，页数是根据服务器返回的数据确定的，所以这边pager_container的div是异步获取的，因此需要通过等待页面加载完毕才能读取页数:&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;page_url = &quot;https://www.lagou.com/jobs/list_iOS?city=%E6%B7%B1%E5%9C%B3&amp;amp;cl=false&amp;amp;fromSearch=true&amp;amp;labelWords=&amp;amp;suginput=&quot;
@@ -214,7 +241,7 @@ get_attribute('innerHTML')      //获取标签对里的内容
 
 &lt;h4 id=&quot;找出每一页岗位信息的链接&quot;&gt;找出每一页岗位信息的链接&lt;/h4&gt;
 &lt;p&gt;岗位信息同样是通过Ajax异步获取的数据，可以从图中显示的消息头中获取真实的请求网址和参数:
-&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-02&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;https://tuyuwang.github.io/img/python/lagou-02.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;以下是基本参数&lt;/p&gt;
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;base_url = &quot;https://www.lagou.com/jobs/positionAjax.json?&quot;

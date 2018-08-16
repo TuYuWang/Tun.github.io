@@ -1,0 +1,30 @@
+---
+layout:     post
+title:      "iOS面试"
+subtitle:   "一些面试笔记，面试前看看"
+date:       "2018-08-03"
+author:     "Tun"
+header-img: "img/swift-openSource.png"
+tags:
+    - iOS
+---
+
+##### 基础
+
+1、OC
+
+2、
+
+##### 进阶
+
+
+
+##### 探索
+
+
+
+##### 其他
+
+1、如何判断上传和下载文件操作成功
+
+用MD5验证数据完整性
